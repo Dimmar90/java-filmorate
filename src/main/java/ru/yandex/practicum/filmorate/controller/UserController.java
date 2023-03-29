@@ -37,12 +37,15 @@ public class UserController {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<User>> violations = validator.validate(user);
-        if (violations.isEmpty()) {
+        if (violations.isEmpty() && user.getId() == 0) {
+            if (user.getName().isBlank()) {
+                user.setName(user.getLogin());
+            }
             user.setId(id++);
             users.put(user.getId(), user);
-        } /*else {
-            System.out.println(violations);
-        }*/
+        } else if (violations.isEmpty() && users.containsKey(user.getId())){
+            users.put(user.getId(), user);
+        }
     }
 
     @GetMapping(value = "/users")
