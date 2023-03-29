@@ -15,12 +15,12 @@ public class UserController {
     private int id = 1;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @PostMapping(value = "/user")
+    @PostMapping(value = "/users")
     public User create(@RequestBody User user) {
         return userValidation(user);
     }
 
-    @PatchMapping(value = "/user")
+    @PatchMapping(value = "/users")
     public User updateUser(@RequestBody User user) {
         return userValidation(user);
     }

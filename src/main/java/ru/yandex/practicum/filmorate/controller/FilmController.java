@@ -17,12 +17,12 @@ public class FilmController {
     private int id = 1;
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
-    @PostMapping(value = "/film")
+    @PostMapping(value = "/films")
     public Film create(@RequestBody Film film) {
         return filmValidation(film);
     }
 
-    @PatchMapping(value = "/film")
+    @PatchMapping(value = "/films")
     public Film update(@RequestBody Film film) {
         return filmValidation(film);
     }
