@@ -43,7 +43,7 @@ public class UserController {
             }
             user.setId(id++);
             users.put(user.getId(), user);
-        } else if (violations.isEmpty() && users.containsKey(user.getId())){
+        } else if (violations.isEmpty() && users.containsKey(user.getId())) {
             users.put(user.getId(), user);
         }
     }
@@ -53,6 +53,7 @@ public class UserController {
         log.debug("Get all users: {}", users);
         return users;
     }
+}
 
 //    public User userValidation(User user) {
 //        try {
@@ -95,4 +96,4 @@ public class UserController {
 //    }
 
 
-}
+
