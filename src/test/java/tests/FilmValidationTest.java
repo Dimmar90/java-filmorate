@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
+
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -68,7 +69,7 @@ public class FilmValidationTest {
     }
 
     @Test
-    public void wrongFilmReleaseDate(){
+    public void wrongFilmReleaseDate() {
         Film film = filmAccount();
         film.setReleaseDate(LocalDate.of(1895, Month.DECEMBER, 27));
         String expectingLoggerMessage = "Wrong release date of film";
