@@ -77,5 +77,5 @@ public class FilmValidationTest {
 
         Assert.assertEquals(expectingLoggerMessage, loggerRule.getFormattedMessages().get(0));
     }
-    
+    //
 }
