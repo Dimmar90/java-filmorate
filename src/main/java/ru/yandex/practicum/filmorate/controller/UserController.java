@@ -32,7 +32,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     void status() {
     }
-    
+
     public void validate(User user) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
