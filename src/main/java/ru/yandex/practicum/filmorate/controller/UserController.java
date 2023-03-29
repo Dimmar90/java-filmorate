@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.validation.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,14 +18,8 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
 
-//    @PostMapping(value = "/users")
-//    public User create(@RequestBody User user) {
-//        return userValidation(user);
-//    }
-
-
     @PostMapping(value = "/users")
-    public User create(@RequestBody User user) {
+    public User create(@RequestBody @Valid User user) {
         validate(user);
         if (users.get(user.getId()) == null) {
             status();
