@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -14,36 +15,35 @@ import java.util.Set;
 @RestController
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
-    private int id = 1;
+    private int id = 0;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-
 
     @PostMapping(value = "/users")
     public User create(@RequestBody @Valid User user) {
-        validate(user);
-        if (users.get(user.getId()) == null) {
-            status();
-        } else {
-            return users.get(user.getId());
+        if (user.getName().isBlank()) {
+            user.setName(user.getLogin());
         }
-        return null;
+        user.setId(++id);
+        users.put(user.getId(), user);
+        return user;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    void status() {
+    @PutMapping(value = "/users")
+    public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
+        if (!users.containsKey(user.getId())) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            users.put(user.getId(), user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
     }
 
     public void validate(User user) {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<User>> violations = validator.validate(user);
-        if (violations.isEmpty() && user.getId() == 0) {
-            if (user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
+        if (violations.isEmpty()) {
             user.setId(id++);
-            users.put(user.getId(), user);
-        } else if (violations.isEmpty() && users.containsKey(user.getId())) {
             users.put(user.getId(), user);
         }
     }

@@ -2,17 +2,18 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Data
 public class User {
+    @NotNull
     private int id;
 
     @Email
     private String email;
 
+    @Pattern(regexp = "\\S+")
     private String login;
 
     private String name;
