@@ -2,10 +2,8 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ConstraintViolation;
@@ -40,7 +38,7 @@ public class UserController {
         return null;
     }
 
-    @ResponseStatus()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     void status() {
     }
 
@@ -57,11 +55,11 @@ public class UserController {
         }*/
     }
 
-//    @GetMapping(value = "/users")
-//    public Map<Integer, User> getUsers() {
-//        log.debug("Get all users: {}", users);
-//        return users;
-//    }
+    @GetMapping(value = "/users")
+    public Map<Integer, User> getUsers() {
+        log.debug("Get all users: {}", users);
+        return users;
+    }
 
 //    public User userValidation(User user) {
 //        try {
