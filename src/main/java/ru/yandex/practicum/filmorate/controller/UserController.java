@@ -8,52 +8,57 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
+    private final List<User> users = new ArrayList<>();
     private int id = 0;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping(value = "/users")
     public User create(@RequestBody @Valid User user) {
+        try {
+            if (user.getName() == null) {
+                throw new NullPointerException();
+            }
+        } catch (NullPointerException e) {
+            user.setName(user.getLogin());
+        }
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         user.setId(++id);
-        users.put(user.getId(), user);
+        users.add(user);
         return user;
     }
 
     @PutMapping(value = "/users")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
-        if (!users.containsKey(user.getId())) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!users.contains(user)) {
+            return new ResponseEntity<>("Wrong update user", HttpStatus.NOT_FOUND);
         } else {
-            users.put(user.getId(), user);
+            users.add(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
     }
 
-    public void validate(User user) {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
-        if (violations.isEmpty()) {
-            user.setId(id++);
-            users.put(user.getId(), user);
-        }
-    }
-
     @GetMapping(value = "/users")
-    public Map<Integer, User> getUsers() {
+    public List<User> getUsers() {
         log.debug("Get all users: {}", users);
         return users;
     }
 }
+
+//    public void validate(User user) {
+//        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+//        Validator validator = factory.getValidator();
+//        Set<ConstraintViolation<User>> violations = validator.validate(user);
+//        if (violations.isEmpty()) {
+//            user.setId(id++);
+//            users.put(user.getId(), user);
+//        }
+//    }
 
 //    public User userValidation(User user) {
 //        try {
