@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ErrorResponse;
+import ru.yandex.practicum.filmorate.exception.WrongUserUpdateException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
@@ -37,9 +36,9 @@ public class UserController {
         return user;
     }
 
-    @ExceptionHandler(value = wrongUserUpdateException.class)
+    @ExceptionHandler(value = WrongUserUpdateException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleWrongUserUpdateException(wrongUserUpdateException ex) {
+    public ErrorResponse handleWrongUserUpdateException(WrongUserUpdateException ex) {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 
@@ -52,7 +51,7 @@ public class UserController {
             }
         }
         if (index == -1) {
-            return new ResponseEntity<>(handleWrongUserUpdateException(new wrongUserUpdateException("User ID not found")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(handleWrongUserUpdateException(new WrongUserUpdateException("User ID not found")), HttpStatus.NOT_FOUND);
         } else {
             users.remove(index);
             users.add(user);
@@ -66,22 +65,6 @@ public class UserController {
         return users;
     }
 }
-
-class wrongUserUpdateException extends RuntimeException {
-
-    public wrongUserUpdateException(String message) {
-        super(message);
-    }
-}
-
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class ErrorResponse {
-    private int statusCode;
-    private String message;
-}
-
 
 //    public User userValidation(User user) {
 //        try {
