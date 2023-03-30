@@ -1,5 +1,8 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,6 @@ public class UserController {
     private final List<User> users = new ArrayList<>();
     private int id = 0;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-
 
     @PostMapping(value = "/users")
     public User create(@RequestBody @Valid User user) {
@@ -35,6 +37,12 @@ public class UserController {
         return user;
     }
 
+    @ExceptionHandler(value = wrongUserUpdateException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleWrongUserUpdateException(wrongUserUpdateException ex) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+    }
+
     @PutMapping(value = "/users")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
         int index = -1;
@@ -44,7 +52,7 @@ public class UserController {
             }
         }
         if (index == -1) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(handleWrongUserUpdateException(new wrongUserUpdateException("User ID not found")), HttpStatus.NOT_FOUND);
         } else {
             users.remove(index);
             users.add(user);
@@ -59,15 +67,21 @@ public class UserController {
     }
 }
 
-//    public void validate(User user) {
-//        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-//        Validator validator = factory.getValidator();
-//        Set<ConstraintViolation<User>> violations = validator.validate(user);
-//        if (violations.isEmpty()) {
-//            user.setId(id++);
-//            users.put(user.getId(), user);
-//        }
-//    }
+class wrongUserUpdateException extends RuntimeException {
+
+    public wrongUserUpdateException(String message) {
+        super(message);
+    }
+}
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class ErrorResponse {
+    private int statusCode;
+    private String message;
+}
+
 
 //    public User userValidation(User user) {
 //        try {
