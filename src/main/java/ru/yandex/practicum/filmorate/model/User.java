@@ -10,14 +10,14 @@ public class User {
     @NotNull
     private int id;
 
-    @Email
+    @Email(message = "Wrong user email format")
     private String email;
 
-    @Pattern(regexp = "\\S+")
+    @Pattern(regexp = "\\S+", message = "Login contains whitespace")
     private String login;
 
     private String name;
 
-    @Past
+    @Past(message = "Wrong user birthday")
     private LocalDate birthday;
 }

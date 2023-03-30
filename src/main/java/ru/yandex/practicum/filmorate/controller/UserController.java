@@ -19,8 +19,9 @@ public class UserController {
     private int id = 0;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
+
     @PostMapping(value = "/users")
-    public User create(@RequestBody @Valid User user) {
+    public User createUser(@RequestBody @Valid User user) {
         try {
             if (user.getName() == null) {
                 throw new NullPointerException();
@@ -33,6 +34,7 @@ public class UserController {
         }
         user.setId(++id);
         users.add(user);
+        log.debug("User added: {}", user.getName());
         return user;
     }
 
@@ -55,6 +57,7 @@ public class UserController {
         } else {
             users.remove(index);
             users.add(user);
+            log.debug("User update: {}", user.getName());
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
     }
@@ -65,46 +68,6 @@ public class UserController {
         return users;
     }
 }
-
-//    public User userValidation(User user) {
-//        try {
-//            if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-//                throw new ValidationException("Incorrect user email");
-//            }
-//        } catch (ValidationException e) {
-//            log.error(e.getMessage());
-//            return null;
-//        }
-//        try {
-//            if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-//                throw new ValidationException("Incorrect user login");
-//            }
-//        } catch (ValidationException e) {
-//            log.error(e.getMessage());
-//            return null;
-//        }
-//        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-//            user.setName(user.getLogin());
-//        }
-//        try {
-//            if (user.getBirthday().isAfter(LocalDateTime.now().toLocalDate())) {
-//                throw new ValidationException("Incorrect user birthday");
-//            }
-//        } catch (ValidationException e) {
-//            log.error(e.getMessage());
-//            return null;
-//        }
-//
-//        if (users.containsKey(user.getId())) {
-//            users.put(user.getId(), user);
-//            log.debug("User updated: {}", user.getName());
-//        } else {
-//            user.setId(id++);
-//            users.put(user.getId(), user);
-//            log.debug("User Added: {}", user.getName());
-//        }
-//        return user;
-//    }
 
 
 
