@@ -24,9 +24,9 @@ public class FilmController {
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     @ExceptionHandler(value = ErrorException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse filmErrorException(ErrorException ex) {
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 
     @PostMapping(value = "/films")
@@ -35,19 +35,19 @@ public class FilmController {
 
         if (film.getName().isEmpty() || film.getName().isBlank()) {
             log.warn("Empty film name");
-            return new ResponseEntity<>(filmErrorException(new ErrorException("Empty film name")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(filmErrorException(new ErrorException("Empty film name")), HttpStatus.BAD_REQUEST);
         }
         if (film.getDescription().length() > 200) {
             log.warn("Description film limit");
-            return new ResponseEntity<>(filmErrorException(new ErrorException("Description film limit")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(filmErrorException(new ErrorException("Description film limit")), HttpStatus.BAD_REQUEST);
         }
         if (film.getReleaseDate().isBefore(date)) {
             log.warn("Wrong release date of film");
-            return new ResponseEntity<>(filmErrorException(new ErrorException("Wrong release date of film")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(filmErrorException(new ErrorException("Wrong release date of film")), HttpStatus.BAD_REQUEST);
         }
         if (film.getDuration() < 1) {
             log.warn("Wrong duration of film");
-            return new ResponseEntity<>(filmErrorException(new ErrorException("Wrong duration of film")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(filmErrorException(new ErrorException("Wrong duration of film")), HttpStatus.BAD_REQUEST);
         }
         film.setId(++id);
         films.add(film);
