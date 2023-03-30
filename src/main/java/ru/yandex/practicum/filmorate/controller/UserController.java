@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import org.apache.catalina.valves.JsonErrorReportValve;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ public class UserController {
     private final List<User> users = new ArrayList<>();
     private int id = 0;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
+
 
     @PostMapping(value = "/users")
     public User create(@RequestBody @Valid User user) {
@@ -35,9 +37,16 @@ public class UserController {
 
     @PutMapping(value = "/users")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
-        if (!users.contains(user)) {
-            return new ResponseEntity<>("Wrong update user", HttpStatus.NOT_FOUND);
+        int index = -1;
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getId() == user.getId()) {
+                index = i;
+            }
+        }
+        if (index == -1) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
+            users.remove(index);
             users.add(user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
