@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.exception.ErrorResponse;
 
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -27,6 +28,12 @@ public class FilmController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse filmErrorException(ErrorException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler(value = ErrorException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse filmUpdateException(ErrorException ex) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 
     @PostMapping(value = "/films")
@@ -53,6 +60,24 @@ public class FilmController {
         films.add(film);
         log.debug("Film added: {}", film.getName());
         return new ResponseEntity<>(film, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/films")
+    public ResponseEntity<?> updateFilm(@RequestBody @Valid Film film) {
+        int index = -1;
+        for (int i = 0; i < films.size(); i++) {
+            if (films.get(i).getId() == film.getId()) {
+                index = i;
+            }
+        }
+        if (index == -1) {
+            return new ResponseEntity<>(filmErrorException(new ErrorException("Film ID not found")), HttpStatus.NOT_FOUND);
+        } else {
+            films.remove(index);
+            films.add(film);
+            log.debug("Film update: {}", film.getName());
+            return new ResponseEntity<>(film, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/films")
