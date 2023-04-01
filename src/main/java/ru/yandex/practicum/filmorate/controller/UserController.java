@@ -10,13 +10,13 @@ import ru.yandex.practicum.filmorate.exception.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class UserController {
-    private final List<User> users = new ArrayList<>();
-    private int id = 0;
+    private final Map<Long, User> users = new HashMap<>();
+    private long id = 0;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @ExceptionHandler(value = ErrorException.class)
@@ -27,18 +27,14 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public User createUser(@RequestBody @Valid User user) {
-        try {
-            if (user.getName() == null) {
-                throw new NullPointerException();
-            }
-        } catch (NullPointerException e) {
+        if (user.getName() == null) {
             user.setName(user.getLogin());
         }
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         user.setId(++id);
-        users.add(user);
+        users.put(user.getId(), user);
         log.debug("User added: {}", user.getName());
         return user;
     }
@@ -54,19 +50,16 @@ public class UserController {
         if (index == -1) {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
         } else {
-            users.remove(index);
-            users.add(user);
+            users.remove(user);
+            users.put(user.getId(), user);
             log.debug("User update: {}", user.getName());
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
     }
 
     @GetMapping(value = "/users")
-    public List<User> getUsers() {
+    public Map<Long, User> getUsers() {
         log.debug("Get all users: {}", users);
         return users;
     }
 }
-
-
-

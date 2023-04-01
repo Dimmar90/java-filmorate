@@ -6,3 +6,4 @@ public class ErrorException extends RuntimeException {
         super(message);
     }
 }
+

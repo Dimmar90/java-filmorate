@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Data
 public class User {
     @NotNull
-    private int id;
+    private long id;
 
     @Email(message = "Wrong user email format")
     private String email;
