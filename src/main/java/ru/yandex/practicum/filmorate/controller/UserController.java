@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.exception.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,11 +42,9 @@ public class UserController {
 
     @PutMapping(value = "/users")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
-        int index = -1;
-        for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getId() == user.getId()) {
-                index = i;
-            }
+        long index = -1;
+        if (users.keySet().contains(user.getId())) {
+            index = user.getId();
         }
         if (index == -1) {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
@@ -58,8 +57,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/users")
-    public Map<Long, User> getUsers() {
+    public Collection<User> getUsers() {
         log.debug("Get all users: {}", users);
-        return users;
+        return users.values();
     }
 }

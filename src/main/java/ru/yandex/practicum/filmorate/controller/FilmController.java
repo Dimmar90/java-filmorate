@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,8 +64,8 @@ public class FilmController {
     }
 
     @GetMapping(value = "/films")
-    public Map<Long, Film> getFilms() {
+    public Collection<Film> getFilms() {
         log.debug("Get all films: {}", films);
-        return films;
+        return films.values();
     }
 }
