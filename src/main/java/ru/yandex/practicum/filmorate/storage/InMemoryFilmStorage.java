@@ -19,7 +19,7 @@ import java.util.Map;
 
 @Component
 @RestController
-public class InMemoryFilmStorage implements FilmStorage{
+public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
     private long id = 0;
     private static final Logger log = LoggerFactory.getLogger(InMemoryFilmStorage.class);
