@@ -19,7 +19,7 @@ import java.util.*;
 @RestController
 public class UserService {
     UserStorage userStorage;
-    private final Map<Integer, Set<User>> friendsListHashMap = new HashMap<>();
+    private final Map<Integer, Set<Long>> friendsListHashMap = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @ExceptionHandler(value = ErrorException.class)
@@ -53,20 +53,20 @@ public class UserService {
 
         boolean isUserAccountAdded = false;
         boolean isFriendAccountAdded = false;
-        User userToAdd = null;
-        User friendToAdd = null;
+        Long usersId = null;
+        Long friendsId = null;
 
         for (User user : userStorage.getUsers()) {
             if (user.getId() == userId) {
                 isUserAccountAdded = true;
-                userToAdd = user;
+                usersId = user.getId();
             }
         }
 
         for (User friend : userStorage.getUsers()) {
             if (friend.getId() == friendId) {
                 isFriendAccountAdded = true;
-                friendToAdd = friend;
+                friendsId = friend.getId();
             }
         }
 
@@ -75,25 +75,31 @@ public class UserService {
         }
 
         if (!friendsListHashMap.containsKey(userId)) {
-            Set<User> friends = new HashSet<>();
-            friendsListHashMap.put(userId, friends);
+            Set<Long> friendsIds = new TreeSet<>();
+            friendsListHashMap.put(userId, friendsIds);
         }
         if (!friendsListHashMap.containsKey(friendId)) {
-            Set<User> friends = new HashSet<>();
-            friendsListHashMap.put(friendId, friends);
+            Set<Long> friendsIds = new TreeSet<>();
+            friendsListHashMap.put(friendId, friendsIds);
         }
-        friendsListHashMap.get(userId).add(friendToAdd);
-        friendsListHashMap.get(friendId).add(userToAdd);
+        friendsListHashMap.get(userId).add(friendsId);
+        friendsListHashMap.get(friendId).add(usersId);
         log.debug("Friend added");
         return new ResponseEntity<>("friend added", HttpStatus.OK);
     }
 
     @GetMapping(value = "/users/{userId}/friends")
     public ResponseEntity<?> getUsersFriends(@PathVariable int userId) {
-        if (!friendsListHashMap.containsKey(userId)) {
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+        if (friendsListHashMap.containsKey(userId)) {
+            List<User> friends = new ArrayList<>();
+            for (User user : userStorage.getUsers()) {
+                if (friendsListHashMap.get(userId).contains(user.getId())) {
+                    friends.add(user);
+                }
+            }
+            return new ResponseEntity<>(friends, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(friendsListHashMap.get(userId), HttpStatus.OK);
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
         }
     }
 }
