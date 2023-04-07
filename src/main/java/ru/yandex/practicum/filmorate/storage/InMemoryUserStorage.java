@@ -60,7 +60,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @GetMapping(value = "/users")
     public Collection<User> getUsers() {
-        log.debug("Get all users: {}", users);
+        //log.debug("Get all users: {}", users);
         return users.values();
     }
 }
