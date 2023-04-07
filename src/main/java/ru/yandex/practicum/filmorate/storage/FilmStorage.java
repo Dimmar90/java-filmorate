@@ -9,6 +9,8 @@ import java.util.Collection;
 
 public interface FilmStorage {
     ResponseEntity<?> createFilm(@RequestBody @Valid Film film);
+
     ResponseEntity<?> updateFilm(@RequestBody @Valid Film film);
+
     Collection<Film> getFilms();
 }
