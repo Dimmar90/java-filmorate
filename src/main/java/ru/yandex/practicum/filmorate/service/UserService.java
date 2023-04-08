@@ -102,4 +102,19 @@ public class UserService {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping(value = "/users/{userId}/friends/common/{friendId}")
+    public ResponseEntity<?> getCommonFriends(@PathVariable int userId, @PathVariable int friendId) {
+        if (friendsListHashMap.containsKey(userId) && friendsListHashMap.containsKey(friendId)) {
+            List<User> commonFriendsList = new ArrayList<>();
+            for (User user : userStorage.getUsers()) {
+                if (friendsListHashMap.get(userId).contains(user.getId()) && friendsListHashMap.get(friendId).contains(user.getId())) {
+                    commonFriendsList.add(user);
+                }
+            }
+            return new ResponseEntity<>(commonFriendsList, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+        }
+    }
 }
