@@ -105,16 +105,35 @@ public class UserService {
 
     @GetMapping(value = "/users/{userId}/friends/common/{friendId}")
     public ResponseEntity<?> getCommonFriends(@PathVariable int userId, @PathVariable int friendId) {
-        if (friendsListHashMap.containsKey(userId) && friendsListHashMap.containsKey(friendId)) {
-            List<User> commonFriendsList = new ArrayList<>();
-            for (User user : userStorage.getUsers()) {
-                if (friendsListHashMap.get(userId).contains(user.getId()) && friendsListHashMap.get(friendId).contains(user.getId())) {
-                    commonFriendsList.add(user);
-                }
+
+        boolean isUserAccountAdded = false;
+        boolean isFriendAccountAdded = false;
+
+        for (User user : userStorage.getUsers()) {
+            if (user.getId() == userId) {
+                isUserAccountAdded = true;
+                break;
             }
-            return new ResponseEntity<>(commonFriendsList, HttpStatus.OK);
-        } else {
+        }
+        for (User friend : userStorage.getUsers()) {
+            if (friend.getId() == friendId) {
+                isFriendAccountAdded = true;
+                break;
+            }
+        }
+        if (!isUserAccountAdded || !isFriendAccountAdded) {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+        }
+        List<User> commonFriendsList = new ArrayList<>();
+        for (User user : userStorage.getUsers()) {
+            if (friendsListHashMap.get(userId).contains(user.getId()) && friendsListHashMap.get(friendId).contains(user.getId())) {
+                commonFriendsList.add(user);
+            }
+        }
+        if (commonFriendsList.isEmpty()) {
+            return new ResponseEntity<>("Empty common friends list", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(commonFriendsList, HttpStatus.OK);
         }
     }
 }
