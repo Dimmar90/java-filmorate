@@ -19,7 +19,7 @@ import java.util.*;
 @RestController
 public class UserService {
     UserStorage userStorage;
-    private final Map<Integer, Set<Long>> friendsListHashMap = new HashMap<>();
+    private final Map<Long, Set<Long>> friendsListHashMap = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @ExceptionHandler(value = ErrorException.class)
@@ -33,7 +33,7 @@ public class UserService {
     }
 
     @GetMapping(value = "/users/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable int userId) {
+    public ResponseEntity<?> getUserById(@PathVariable long userId) {
         boolean isUserAdded = false;
         for (User user : userStorage.getUsers()) {
             if (user.getId() == userId) {
@@ -49,7 +49,7 @@ public class UserService {
     }
 
     @PutMapping(value = "/users/{userId}/friends/{friendId}")
-    public ResponseEntity<?> addFriend(@PathVariable int userId, @PathVariable int friendId) {
+    public ResponseEntity<?> addFriend(@PathVariable long userId, @PathVariable long friendId) {
 
         boolean isUserAccountAdded = false;
         boolean isFriendAccountAdded = false;
@@ -89,7 +89,7 @@ public class UserService {
     }
 
     @GetMapping(value = "/users/{userId}/friends")
-    public ResponseEntity<?> getUsersFriends(@PathVariable int userId) {
+    public ResponseEntity<?> getUsersFriends(@PathVariable long userId) {
         if (friendsListHashMap.containsKey(userId)) {
             List<User> friends = new ArrayList<>();
             for (User user : userStorage.getUsers()) {
@@ -104,36 +104,39 @@ public class UserService {
     }
 
     @GetMapping(value = "/users/{userId}/friends/common/{friendId}")
-    public ResponseEntity<?> getCommonFriends(@PathVariable int userId, @PathVariable int friendId) {
+    public ResponseEntity<?> getCommonFriends(@PathVariable long userId, @PathVariable long friendId) {
 
-        boolean isUserAccountAdded = false;
-        boolean isFriendAccountAdded = false;
-
-        for (User user : userStorage.getUsers()) {
-            if (user.getId() == userId) {
-                isUserAccountAdded = true;
-                break;
-            }
-        }
-        for (User friend : userStorage.getUsers()) {
-            if (friend.getId() == friendId) {
-                isFriendAccountAdded = true;
-                break;
-            }
-        }
-        if (!isUserAccountAdded || !isFriendAccountAdded) {
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
-        }
+//        boolean isUserAccountAdded = false;
+//        boolean isFriendAccountAdded = false;
+//
+//        for (User user : userStorage.getUsers()) {
+//            if (user.getId() == userId) {
+//                isUserAccountAdded = true;
+//                break;
+//            }
+//        }
+//        for (User friend : userStorage.getUsers()) {
+//            if (friend.getId() == friendId) {
+//                isFriendAccountAdded = true;
+//                break;
+//            }
+//        }
+//        if (!isUserAccountAdded || !isFriendAccountAdded) {
+//            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+//        }
         List<User> commonFriendsList = new ArrayList<>();
         for (User user : userStorage.getUsers()) {
             if (friendsListHashMap.get(userId).contains(user.getId()) && friendsListHashMap.get(friendId).contains(user.getId())) {
                 commonFriendsList.add(user);
             }
         }
-        if (commonFriendsList.isEmpty()) {
-            return new ResponseEntity<>("Empty common friends list", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(commonFriendsList, HttpStatus.OK);
-        }
+        return new ResponseEntity<>(commonFriendsList, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/users/{userId}/friends/{friendId}")
+    public ResponseEntity<?> deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
+        friendsListHashMap.get(userId).remove(friendId);
+        friendsListHashMap.get(friendId).remove(userId);
+        return new ResponseEntity<>("friend deleted", HttpStatus.OK);
     }
 }
