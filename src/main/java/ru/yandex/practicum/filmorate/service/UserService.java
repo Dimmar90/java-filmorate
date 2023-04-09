@@ -35,7 +35,6 @@ public class UserService {
     @GetMapping(value = "/users/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable long userId) {
         boolean isUserAdded = false;
-        
         for (User user : userStorage.getUsers()) {
             if (user.getId() == userId) {
                 isUserAdded = true;
