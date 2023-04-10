@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.exception.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
@@ -67,7 +68,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @GetMapping(value = "/films")
     public Collection<Film> getFilms() {
-        log.debug("Get all films: {}", films);
         return films.values();
     }
 }
