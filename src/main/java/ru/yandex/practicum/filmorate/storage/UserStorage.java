@@ -1,16 +1,18 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.model.User;
 
-import javax.validation.Valid;
-import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface UserStorage {
-    User createUser(@RequestBody @Valid User user);
-
-    ResponseEntity<?> updateUser(@RequestBody @Valid User user);
-
-    Collection<User> getUsers();
+    void addUser(User user);
+    void updateUser(User user);
+    User getUserById(long id);
+    Map<Long, User> getAllUsers();
+    void addFriend(User user, User friend);
+    Set<User> getUserFriendList(User user);
+    List<User> getCommonListOfFriends(User user, User usersFriend);
+    void deleteFriend(User user, User friend);
 }
