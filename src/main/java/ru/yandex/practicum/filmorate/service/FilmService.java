@@ -14,8 +14,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Component
@@ -24,7 +23,13 @@ public class FilmService {
     FilmStorage filmStorage;
     UserStorage userStorage;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    private Map<Long, Long> likesMap = new HashMap<>();
+
+    Comparator<Film> filmComparator = new Comparator<>() {
+        @Override
+        public int compare(Film film1, Film film2) {
+            return (int) (film2.getRate() - film1.getRate());
+        }
+    };
 
     @ExceptionHandler(value = ErrorException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -81,16 +86,70 @@ public class FilmService {
             log.warn("Wrong user id");
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Wrong user id")), HttpStatus.NOT_FOUND);
         }
+        addLikeInRate(id);
+        return new ResponseEntity<>("Add like", HttpStatus.OK);
+    }
 
-        if (!likesMap.containsKey(id)) {
-            likesMap.put(id, 1L);
-            log.warn("Add like");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Add like")), HttpStatus.OK);
-        } else {
-            Long likes = likesMap.get(id) + 1;
-            likesMap.put(id, likes);
-            log.warn("Add like");
-            return new ResponseEntity<>("Add like", HttpStatus.OK);
+    @DeleteMapping(path = "/films/{id}/like/{userId}")
+    public ResponseEntity<?> deleteLike(@PathVariable long id, @PathVariable long userId) {
+        boolean isFilmAdded = false;
+        boolean isUserAdded = false;
+
+        for (Film film : filmStorage.getFilms()) {
+            if (film.getId() == id) {
+                isFilmAdded = true;
+                break;
+            }
         }
+        for (User user : userStorage.getUsers()) {
+            if (user.getId() == userId) {
+                isUserAdded = true;
+                break;
+            }
+        }
+
+        if (!isFilmAdded) {
+            log.warn("Wrong film id");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Wrong film id")), HttpStatus.NOT_FOUND);
+        }
+        if (!isUserAdded) {
+            log.warn("Wrong user id");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Wrong user id")), HttpStatus.NOT_FOUND);
+        }
+        deleteLikeInRate(id);
+        return new ResponseEntity<>("Add like", HttpStatus.OK);
+    }
+
+    public void addLikeInRate(long id) {
+        for (Film film : filmStorage.getFilms()) {
+            if (film.getId() == id) {
+                long addLike = film.getRate() + 1;
+                film.setRate(addLike);
+            }
+        }
+    }
+
+    public void deleteLikeInRate(long id) {
+        for (Film film : filmStorage.getFilms()) {
+            if (film.getId() == id) {
+                long addLike = film.getRate() - 1;
+                film.setRate(addLike);
+            }
+        }
+    }
+
+    @GetMapping(value = "/films/popular")
+    public ResponseEntity<?> getPopularFilms(@RequestParam(required = false) String count) {
+        int maxSize = 0;
+        if (count == null) {
+            maxSize = 10;
+        } else {
+            maxSize = Integer.parseInt(count);
+        }
+        List<Film> list = new ArrayList<>();
+        for (Film film : filmStorage.getFilms()) {
+            list.add(film);
+        }
+        return new ResponseEntity<>(list.stream().sorted(filmComparator).limit(maxSize), HttpStatus.OK);
     }
 }
