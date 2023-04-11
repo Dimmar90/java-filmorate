@@ -102,7 +102,7 @@ public class UserService {
         return new ResponseEntity<>(inMemoryUserStorage.getCommonListOfFriends(inMemoryUserStorage.getUserById(userId),
                 inMemoryUserStorage.getUserById(friendId)), HttpStatus.OK);
     }
-    
+
     public ResponseEntity<?> deleteFriend(long userId, long friendId) {
         if (!inMemoryUserStorage.getAllUsers().containsKey(userId)) {
             log.warn("Incorrect ID of user");
