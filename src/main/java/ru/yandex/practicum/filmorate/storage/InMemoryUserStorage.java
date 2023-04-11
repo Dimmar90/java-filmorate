@@ -48,8 +48,8 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    public Set<User> getUserFriendList(User user) {
-        return usersFriends.get(user);
+    public List<User> getUserFriendList(User user) {
+        return new ArrayList<>(usersFriends.get(user));
     }
 
     public List<User> getCommonListOfFriends(User user, User usersFriend) {
