@@ -45,7 +45,7 @@ public class InMemoryUserStorage implements UserStorage {
     @PutMapping(value = "/users")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
         long index = -1;
-        if (users.keySet().contains(user.getId())) {
+        if (users.containsKey(user.getId())) {
             index = user.getId();
         }
         if (index == -1) {
@@ -60,7 +60,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @GetMapping(value = "/users")
     public Collection<User> getUsers() {
-        //log.debug("Get all users: {}", users);
         return users.values();
     }
 }

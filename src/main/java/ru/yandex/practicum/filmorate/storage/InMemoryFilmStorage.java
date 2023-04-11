@@ -23,7 +23,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
     private long id = 0;
     private static final Logger log = LoggerFactory.getLogger(InMemoryFilmStorage.class);
-    private LocalDate date = LocalDate.of(1895, Month.DECEMBER, 28);
+    private final LocalDate date = LocalDate.of(1895, Month.DECEMBER, 28);
 
     @ExceptionHandler(value = ErrorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -48,7 +48,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         LocalDate date = LocalDate.of(1895, Month.DECEMBER, 28);
         long index = -1;
 
-        if (films.keySet().contains(film.getId())) {
+        if (films.containsKey(film.getId())) {
             index = film.getId();
         }
 
