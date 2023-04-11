@@ -20,16 +20,10 @@ import java.util.*;
 @Component
 @RestController
 public class FilmService {
-    FilmStorage filmStorage;
-    UserStorage userStorage;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
-
-    Comparator<Film> filmComparator = new Comparator<>() {
-        @Override
-        public int compare(Film film1, Film film2) {
-            return (int) (film2.getRate() - film1.getRate());
-        }
-    };
+    private final Comparator<Film> filmComparator = (film1, film2) -> (int) (film2.getRate() - film1.getRate());
 
     @ExceptionHandler(value = ErrorException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -60,6 +54,15 @@ public class FilmService {
         }
     }
 
+    public void addLikeInRate(long id) {
+        for (Film film : filmStorage.getFilms()) {
+            if (film.getId() == id) {
+                long amountOfLikes = film.getRate() + 1;
+                film.setRate(amountOfLikes);
+            }
+        }
+    }
+
     @PutMapping(path = "/films/{id}/like/{userId}")
     public ResponseEntity<?> addLike(@PathVariable long id, @PathVariable long userId) {
         boolean isFilmAdded = false;
@@ -87,7 +90,17 @@ public class FilmService {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Wrong user id")), HttpStatus.NOT_FOUND);
         }
         addLikeInRate(id);
+        log.debug("Add like");
         return new ResponseEntity<>("Add like", HttpStatus.OK);
+    }
+
+    public void deleteLikeInRate(long id) {
+        for (Film film : filmStorage.getFilms()) {
+            if (film.getId() == id) {
+                long amountOfLikes = film.getRate() - 1;
+                film.setRate(amountOfLikes);
+            }
+        }
     }
 
     @DeleteMapping(path = "/films/{id}/like/{userId}")
@@ -117,39 +130,20 @@ public class FilmService {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Wrong user id")), HttpStatus.NOT_FOUND);
         }
         deleteLikeInRate(id);
+        log.debug("Delete like");
         return new ResponseEntity<>("Add like", HttpStatus.OK);
-    }
-
-    public void addLikeInRate(long id) {
-        for (Film film : filmStorage.getFilms()) {
-            if (film.getId() == id) {
-                long addLike = film.getRate() + 1;
-                film.setRate(addLike);
-            }
-        }
-    }
-
-    public void deleteLikeInRate(long id) {
-        for (Film film : filmStorage.getFilms()) {
-            if (film.getId() == id) {
-                long addLike = film.getRate() - 1;
-                film.setRate(addLike);
-            }
-        }
     }
 
     @GetMapping(value = "/films/popular")
     public ResponseEntity<?> getPopularFilms(@RequestParam(required = false) String count) {
-        int maxSize = 0;
+        int maxSize;
         if (count == null) {
             maxSize = 10;
         } else {
             maxSize = Integer.parseInt(count);
         }
-        List<Film> list = new ArrayList<>();
-        for (Film film : filmStorage.getFilms()) {
-            list.add(film);
-        }
-        return new ResponseEntity<>(list.stream().sorted(filmComparator).limit(maxSize), HttpStatus.OK);
+        List<Film> listOfFilms = new ArrayList<>(filmStorage.getFilms());
+        log.debug("Get most popular films");
+        return new ResponseEntity<>(listOfFilms.stream().sorted(filmComparator).limit(maxSize), HttpStatus.OK);
     }
 }

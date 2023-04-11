@@ -18,7 +18,7 @@ import java.util.*;
 @Component
 @RestController
 public class UserService {
-    UserStorage userStorage;
+    private final UserStorage userStorage;
     private final Map<Long, Set<Long>> friendsListHashMap = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
