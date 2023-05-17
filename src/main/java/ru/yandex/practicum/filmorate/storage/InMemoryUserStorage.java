@@ -13,6 +13,7 @@ import java.util.*;
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
     private final Map<User, Set<User>> usersFriends = new HashMap<>();
+
     private long id = 0;
 
     @ExceptionHandler(value = ErrorException.class)
@@ -48,9 +49,15 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    public List<User> getUserFriendList(User user) {
-        return new ArrayList<>(usersFriends.get(user));
+//    public List<User> getUserFriendList(User user) {
+//        return new ArrayList<>(usersFriends.get(user));
+//    }
+//
+
+    public Set<User> getUserFriendList(User user) {
+        return usersFriends.get(user);
     }
+
 
     public List<User> getCommonListOfFriends(User user, User usersFriend) {
         List<User> commonFriendsList = new ArrayList<>();

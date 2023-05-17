@@ -4,6 +4,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface UserStorage {
     void addUser(User user);
@@ -16,7 +17,7 @@ public interface UserStorage {
 
     void addFriend(User user, User friend);
 
-    List<User> getUserFriendList(User user);
+    Set<User> getUserFriendList(User user);
 
     List<User> getCommonListOfFriends(User user, User usersFriend);
 
