@@ -57,7 +57,7 @@ public class FilmService {
             return new ResponseEntity<>(film, HttpStatus.OK);
         } else {
             log.error("Wrong Film Id");
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong Film Id")), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong Film Id")), HttpStatus.valueOf(500));
         }
     }
 
