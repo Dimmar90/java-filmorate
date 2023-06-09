@@ -51,9 +51,14 @@ public class FilmService {
     }
 
     public ResponseEntity<?> updateFilm(Film film) {
-        inMemoryFilmStorage.updateFilm(film);
-        log.debug("Film updated: {}", film.getName());
-        return new ResponseEntity<>(film, HttpStatus.OK);
+        if (inMemoryFilmStorage.getAllFilms().containsKey(film.getId())){
+            inMemoryFilmStorage.updateFilm(film);
+            log.debug("Film updated: {}", film.getName());
+            return new ResponseEntity<>(film, HttpStatus.OK);
+        } else {
+            log.error("Wrong Film Id");
+            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong Film Id")), HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<?> getAllFilms() {
