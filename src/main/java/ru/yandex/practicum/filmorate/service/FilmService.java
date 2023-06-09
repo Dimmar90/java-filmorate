@@ -57,13 +57,13 @@ public class FilmService {
             return new ResponseEntity<>(film, HttpStatus.OK);
         } else {
             log.error("Wrong Film Id");
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong Film Id")), HttpStatus.valueOf(500));
+            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
         }
     }
 
-    public ResponseEntity<?> getAllFilms() {
+    public java.util.Collection<Film> getAllFilms() {
         log.debug("Get all films: {}", inMemoryFilmStorage.getAllFilms().values());
-        return new ResponseEntity<>(inMemoryFilmStorage.getAllFilms().values(), HttpStatus.OK);
+        return inMemoryFilmStorage.getAllFilms().values();
     }
 
     public ResponseEntity<?> getFilmById(long id) {
