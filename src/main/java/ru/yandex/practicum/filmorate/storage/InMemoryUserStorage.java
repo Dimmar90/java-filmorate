@@ -15,7 +15,8 @@ import java.util.*;
 @Component
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
-    private final Map<User, Set<User>> usersFriends = new HashMap<>();
+    private final Map<User, Deque<User>> usersFriends = new HashMap<>();
+
     private long id = 0;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
@@ -45,15 +46,15 @@ public class InMemoryUserStorage implements UserStorage {
 
     public void addFriend(User user, User friend) {
         if (!usersFriends.containsKey(user)) {
-            Set<User> friends = new HashSet<>();
-            friends.add(friend);
+            Deque<User> friends = new ArrayDeque<>();
+            friends.addFirst(friend);
             usersFriends.put(user, friends);
         } else {
-            usersFriends.get(user).add(friend);
+            usersFriends.get(user).addFirst(friend);
         }
     }
 
-    public Set<User> getUserFriendList(User user) {
+    public Deque<User> getUserFriendList(User user) {
         return usersFriends.get(user);
     }
 
