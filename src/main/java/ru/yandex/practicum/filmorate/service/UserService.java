@@ -50,16 +50,19 @@ public class UserService {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
         } else {
             inMemoryUserStorage.updateUser(user);
+            log.debug("User update: {}", user.getName());
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
     }
 
     public Collection<User> getUsers() {
+        log.debug("Get all users: {}", inMemoryUserStorage.getAllUsers().values());
         return inMemoryUserStorage.getAllUsers().values();
     }
 
     public ResponseEntity<?> getUserById(long userId) {
         if (inMemoryUserStorage.getAllUsers().containsKey(userId)) {
+            log.debug("Get user by id: {}", userId);
             return new ResponseEntity<>(inMemoryUserStorage.getUserById(userId), HttpStatus.OK);
         } else {
             log.warn("Incorrect ID of user");
@@ -78,12 +81,13 @@ public class UserService {
         }
         inMemoryUserStorage.addFriend(inMemoryUserStorage.getUserById(userId), inMemoryUserStorage.getUserById(friendId));
         inMemoryUserStorage.addFriend(inMemoryUserStorage.getUserById(friendId), inMemoryUserStorage.getUserById(userId));
-
+        log.debug("Friend added");
         return new ResponseEntity<>("friend added", HttpStatus.OK);
     }
 
     public ResponseEntity<?> getUsersFriends(long userId) {
         if (inMemoryUserStorage.getAllUsers().containsKey(userId)) {
+            log.debug("Get users friends list");
             return new ResponseEntity<>(inMemoryUserStorage.getUserFriendList(inMemoryUserStorage.getUserById(userId)), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
@@ -99,6 +103,7 @@ public class UserService {
             log.warn("Incorrect ID of friend");
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Friend ID not found")), HttpStatus.NOT_FOUND);
         }
+        log.debug("Get common friends list");
         return new ResponseEntity<>(inMemoryUserStorage.getCommonListOfFriends(inMemoryUserStorage.getUserById(userId),
                 inMemoryUserStorage.getUserById(friendId)), HttpStatus.OK);
     }
@@ -116,6 +121,7 @@ public class UserService {
             return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Not found friend in friendList")), HttpStatus.NOT_FOUND);
         }
         inMemoryUserStorage.deleteFriend(inMemoryUserStorage.getUserById(userId), inMemoryUserStorage.getUserById(friendId));
+        log.debug("Friend deleted");
         return new ResponseEntity<>("Friend deleted", HttpStatus.OK);
     }
 }

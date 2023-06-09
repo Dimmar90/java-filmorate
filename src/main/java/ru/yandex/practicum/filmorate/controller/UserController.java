@@ -30,49 +30,41 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public User createUser(@RequestBody @Valid User user) {
-        log.debug("User added: {}", user.getName());
         return userService.createUser(user);
     }
 
     @PutMapping(value = "/users")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
-        log.debug("User update: {}", user.getName());
         return userService.updateUser(user);
     }
 
     @GetMapping(value = "/users")
     public Collection<User> getUsers() {
-        log.debug("Get all users: {}", userService.getUsers());
         return userService.getUsers();
     }
 
     @GetMapping(value = "/users/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable long userId) {
-        log.debug("Get user by id: {}", userId);
         return userService.getUserById(userId);
     }
 
     @PutMapping(value = "/users/{userId}/friends/{friendId}")
     public ResponseEntity<?> addFriend(@PathVariable long userId, @PathVariable long friendId) {
-        log.debug("Friend added");
         return userService.addFriend(userId, friendId);
     }
 
     @GetMapping(value = "/users/{userId}/friends")
     public ResponseEntity<?> getUsersFriends(@PathVariable long userId) {
-        log.debug("Get users friends list");
         return userService.getUsersFriends(userId);
     }
 
     @GetMapping(value = "/users/{userId}/friends/common/{friendId}")
     public ResponseEntity<?> getCommonFriends(@PathVariable long userId, @PathVariable long friendId) {
-        log.debug("Get common friends list");
         return userService.getCommonFriends(userId, friendId);
     }
 
     @DeleteMapping(value = "/users/{userId}/friends/{friendId}")
     public ResponseEntity<?> deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
-        log.debug("Friend deleted");
         return userService.deleteFriend(userId,friendId);
     }
 }
