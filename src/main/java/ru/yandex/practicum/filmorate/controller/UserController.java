@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.exception.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -16,10 +17,12 @@ import java.util.Collection;
 @RestController
 public class UserController {
     private final UserService userService;
+    private final InMemoryUserStorage inMemoryUserStorage;
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, InMemoryUserStorage inMemoryUserStorage) {
         this.userService = userService;
+        this.inMemoryUserStorage = inMemoryUserStorage;
     }
 
     @ExceptionHandler(value = ErrorException.class)
@@ -30,22 +33,22 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public User createUser(@RequestBody @Valid User user) {
-        return userService.createUser(user);
+        return inMemoryUserStorage.addUser(user);
     }
 
     @PutMapping(value = "/users")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
-        return userService.updateUser(user);
+        return inMemoryUserStorage.updateUser(user);
     }
 
     @GetMapping(value = "/users")
     public Collection<User> getUsers() {
-        return userService.getUsers();
+        return inMemoryUserStorage.getUsers();
     }
 
     @GetMapping(value = "/users/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable long userId) {
-        return userService.getUserById(userId);
+        return inMemoryUserStorage.getUserById(userId);
     }
 
     @PutMapping(value = "/users/{userId}/friends/{friendId}")
@@ -55,12 +58,12 @@ public class UserController {
 
     @GetMapping(value = "/users/{userId}/friends")
     public ResponseEntity<?> getUsersFriends(@PathVariable long userId) {
-        return userService.getUsersFriends(userId);
+        return inMemoryUserStorage.getUsersFriends(userId);
     }
 
     @GetMapping(value = "/users/{userId}/friends/common/{friendId}")
     public ResponseEntity<?> getCommonFriends(@PathVariable long userId, @PathVariable long friendId) {
-        return userService.getCommonFriends(userId, friendId);
+        return inMemoryUserStorage.getCommonFriends(userId, friendId);
     }
 
     @DeleteMapping(value = "/users/{userId}/friends/{friendId}")
@@ -68,3 +71,4 @@ public class UserController {
         return userService.deleteFriend(userId,friendId);
     }
 }
+

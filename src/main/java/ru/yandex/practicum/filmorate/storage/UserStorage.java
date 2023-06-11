@@ -1,25 +1,28 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import org.springframework.http.ResponseEntity;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.util.Collection;
 import java.util.Deque;
-import java.util.List;
 import java.util.Map;
 
 public interface UserStorage {
-    void addUser(User user);
+    User addUser(User user);
 
-    void updateUser(User user);
+    ResponseEntity<?> updateUser(User user);
 
-    User getUserById(long id);
+    Collection<User> getUsers();
 
-    Map<Long, User> getAllUsers();
+    Map<Long, User> getUsersMap();
+
+    Map<User, Deque<User>> getUsersFriendsMap();
+
+    ResponseEntity<?> getUserById(long userId);
+
+    ResponseEntity<?> getUsersFriends(long userId);
+
+    ResponseEntity<?> getCommonFriends(long userId, long friendId);
 
     void addFriend(User user, User friend);
-
-    Deque<User> getUserFriendList(User user);
-
-    List<User> getCommonListOfFriends(User user, User usersFriend);
-
-    void deleteFriend(User user, User friend);
 }
