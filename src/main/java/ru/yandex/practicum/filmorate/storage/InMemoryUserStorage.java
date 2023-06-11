@@ -8,15 +8,12 @@ import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.exception.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
-    private final Map<User, Deque<User>> usersFriends = new HashMap<>();
+    private final Map<User, Set<User>> usersFriends = new HashMap<>();
 
     private long id = 0;
 
@@ -42,15 +39,15 @@ public class InMemoryUserStorage implements UserStorage {
 
     public void addFriend(User user, User friend) {
         if (!usersFriends.containsKey(user)) {
-            Deque<User> friends = new ArrayDeque<>();
-            friends.addFirst(friend);
+            Set<User> friends = new HashSet<>();
+            friends.add(friend);
             usersFriends.put(user, friends);
         } else {
-            usersFriends.get(user).addFirst(friend);
+            usersFriends.get(user).add(friend);
         }
     }
 
-    public Map<User, Deque<User>> getUsersFriendsMap() {
+    public Map<User, Set<User>> getUsersFriendsMap() {
         return usersFriends;
     }
 }
