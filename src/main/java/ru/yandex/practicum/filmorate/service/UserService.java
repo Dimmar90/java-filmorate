@@ -86,7 +86,7 @@ public class UserService {
     public ResponseEntity<?> getUsersFriends(long userId) {
         if (inMemoryUserStorage.getUsers().containsKey(userId)) {
             List<User> usersFriends = new ArrayList<>();
-            for (Long friendsId : inMemoryUserStorage.getUsersFriendsIDS().get(userId)){
+            for (Long friendsId : inMemoryUserStorage.getUsersFriendsIDS().get(userId)) {
                 usersFriends.add(inMemoryUserStorage.getUsers().get(friendsId));
             }
             log.debug("Get Users Friends :{}", usersFriends);
