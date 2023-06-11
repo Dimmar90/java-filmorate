@@ -12,7 +12,7 @@ public interface UserStorage {
 
     Map<Long, User> getUsers();
 
-    Map<User, Set<User>> getUsersFriendsMap();
+    Map<Long, Set<Long>> getUsersFriendsIDS();
 
     void addFriend(User user, User friend);
 }
