@@ -13,7 +13,7 @@ import java.util.*;
 @Component
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
-    private final Map<User, List<User>> usersFriends = new HashMap<>();
+    private final Map<User, Set<User>> usersFriends = new HashMap<>();
 
     private long id = 0;
 
@@ -39,7 +39,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     public void addFriend(User user, User friend) {
         if (!usersFriends.containsKey(user)) {
-            List<User> friends = new ArrayList<>();
+            Set<User> friends = new HashSet<>();
             friends.add(friend);
             usersFriends.put(user, friends);
         } else {
@@ -47,7 +47,7 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    public Map<User, List<User>> getUsersFriendsMap() {
+    public Map<User, Set<User>> getUsersFriendsMap() {
         return usersFriends;
     }
 }

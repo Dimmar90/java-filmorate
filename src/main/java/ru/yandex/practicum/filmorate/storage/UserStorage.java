@@ -2,8 +2,8 @@ package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface UserStorage {
     void addUser(User user);
@@ -12,7 +12,7 @@ public interface UserStorage {
 
     Map<Long, User> getUsers();
 
-    Map<User, List<User>> getUsersFriendsMap();
+    Map<User, Set<User>> getUsersFriendsMap();
 
     void addFriend(User user, User friend);
 }
