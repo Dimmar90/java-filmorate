@@ -63,7 +63,7 @@ public class FilmService {
 
     public ResponseEntity<?> getAllFilms() {
         log.debug("Get All Films: {}", inMemoryFilmStorage.getAllFilms().values());
-        return new ResponseEntity<>(inMemoryFilmStorage.getAllFilms(), HttpStatus.OK);
+        return new ResponseEntity<>(inMemoryFilmStorage.getAllFilms().values(), HttpStatus.OK);
     }
 
     public ResponseEntity<?> getFilmById(long filmID) {
