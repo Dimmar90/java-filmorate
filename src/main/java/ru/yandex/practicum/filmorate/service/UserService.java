@@ -38,7 +38,7 @@ public class UserService {
             user.setName(user.getLogin());
         }
         inMemoryUserStorage.addUser(user);
-        log.debug("User added: {}", user);
+        log.debug("User Added: {}", user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -48,8 +48,8 @@ public class UserService {
             log.debug("User Updated :{}", user);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            log.warn("User ID not found");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("User Id Not Found");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User Id Not Found")), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -60,60 +60,60 @@ public class UserService {
 
     public ResponseEntity<?> getUserById(long userId) {
         if (inMemoryUserStorage.getUsers().containsKey(userId)) {
-            log.debug("Get User By ID :{}", inMemoryUserStorage.getUsers().get(userId));
+            log.debug("Get User By Id :{}", inMemoryUserStorage.getUsers().get(userId));
             return new ResponseEntity<>(inMemoryUserStorage.getUsers().get(userId), HttpStatus.OK);
         } else {
-            log.warn("User ID not found");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("User Id Not Found");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID Not Found")), HttpStatus.NOT_FOUND);
         }
     }
 
     public ResponseEntity<?> addFriend(long userId, long friendId) {
         if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
-            log.warn("Incorrect ID of user");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("Incorrect Id Of User");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User Id Not Found")), HttpStatus.NOT_FOUND);
         }
         if (!inMemoryUserStorage.getUsers().containsKey(friendId)) {
-            log.warn("Incorrect ID of friend");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Friend ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("Incorrect Id Of Friend");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Friend Id Not Found")), HttpStatus.NOT_FOUND);
         }
-        inMemoryUserStorage.addFriendID(userId, friendId);
-        inMemoryUserStorage.addFriendID(friendId, userId);
-        log.debug("Friend added");
-        return new ResponseEntity<>("friend added", HttpStatus.OK);
+        inMemoryUserStorage.addFriendId(userId, friendId);
+        inMemoryUserStorage.addFriendId(friendId, userId);
+        log.debug("Friend Added");
+        return new ResponseEntity<>("Friend Added", HttpStatus.OK);
     }
 
     public ResponseEntity<?> getUsersFriends(long userId) {
         if (inMemoryUserStorage.getUsers().containsKey(userId)) {
             List<User> usersFriends = new ArrayList<>();
-            for (Long friendsId : inMemoryUserStorage.getUsersFriendsIDS().get(userId)) {
+            for (Long friendsId : inMemoryUserStorage.getUsersFriendsIds().get(userId)) {
                 usersFriends.add(inMemoryUserStorage.getUsers().get(friendsId));
             }
             log.debug("Get Users Friends :{}", usersFriends);
             return new ResponseEntity<>(usersFriends, HttpStatus.OK);
         } else {
-            log.warn("Incorrect ID of user");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("Incorrect Id Of User");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User Id Not Found")), HttpStatus.NOT_FOUND);
         }
     }
 
     public ResponseEntity<?> getCommonFriends(long userId, long friendId) {
         if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
-            log.warn("Incorrect ID of user");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("Incorrect Id Of User");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User Id Not Found")), HttpStatus.NOT_FOUND);
         }
         if (!inMemoryUserStorage.getUsers().containsKey(friendId)) {
-            log.warn("Incorrect ID of friend");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Friend ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("Incorrect Id Of Friend");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Friend Id Not Found")), HttpStatus.NOT_FOUND);
         }
         List<User> commonFriendsList = new ArrayList<>();
         try {
-            for (Long friendID : inMemoryUserStorage.getUsersFriendsIDS().get(userId)) {
-                if (inMemoryUserStorage.getUsersFriendsIDS().get(friendId).contains(friendID)) {
+            for (Long friendID : inMemoryUserStorage.getUsersFriendsIds().get(userId)) {
+                if (inMemoryUserStorage.getUsersFriendsIds().get(friendId).contains(friendID)) {
                     commonFriendsList.add(inMemoryUserStorage.getUsers().get(friendID));
                 }
             }
-            log.debug("Get common friends list:{}", commonFriendsList);
+            log.debug("Get Common Friends List:{}", commonFriendsList);
             return new ResponseEntity<>(commonFriendsList, HttpStatus.OK);
         } catch (NullPointerException e) {
             return new ResponseEntity<>(commonFriendsList, HttpStatus.OK);
@@ -122,19 +122,19 @@ public class UserService {
 
     public ResponseEntity<?> deleteFriend(long userId, long friendId) {
         if (!inMemoryUserStorage.getUsers().containsKey(userId)) {
-            log.warn("Incorrect ID of user");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("Incorrect Id Of User");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("User Id Not Found")), HttpStatus.NOT_FOUND);
         }
         if (!inMemoryUserStorage.getUsers().containsKey(friendId)) {
-            log.warn("Incorrect ID of friend");
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Friend ID not found")), HttpStatus.NOT_FOUND);
+            log.warn("Incorrect Id Of Friend");
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Friend Id Not Found")), HttpStatus.NOT_FOUND);
         }
-        if (!inMemoryUserStorage.getUsersFriendsIDS().get(userId).contains(friendId)) {
-            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Not found friend in friendList")), HttpStatus.NOT_FOUND);
+        if (!inMemoryUserStorage.getUsersFriendsIds().get(userId).contains(friendId)) {
+            return new ResponseEntity<>(handleWrongUserUpdateException(new ErrorException("Not Found Friend In FriendList")), HttpStatus.NOT_FOUND);
         }
-        inMemoryUserStorage.deleteFriend(userId, friendId);
-        inMemoryUserStorage.deleteFriend(friendId, userId);
-        log.debug("Friend deleted");
-        return new ResponseEntity<>("Friend deleted", HttpStatus.OK);
+        inMemoryUserStorage.deleteFriendId(userId, friendId);
+        inMemoryUserStorage.deleteFriendId(friendId, userId);
+        log.debug("Friend Deleted");
+        return new ResponseEntity<>("Friend Deleted", HttpStatus.OK);
     }
 }

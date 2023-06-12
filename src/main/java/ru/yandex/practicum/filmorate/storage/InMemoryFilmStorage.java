@@ -26,4 +26,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Map<Long, Film> getAllFilms() {
         return films;
     }
+
+    public Film getFilmById(Long filmId){
+        return films.get(filmId);
+    }
 }

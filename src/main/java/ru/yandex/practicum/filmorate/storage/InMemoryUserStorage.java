@@ -22,20 +22,24 @@ public class InMemoryUserStorage implements UserStorage {
         return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
     }
 
+    @Override
     public void addUser(User user) {
         user.setId(++id);
         users.put(user.getId(), user);
     }
 
+    @Override
     public void updateUser(User user) {
         users.put(user.getId(), user);
     }
 
+    @Override
     public Map<Long, User> getUsers() {
         return users;
     }
 
-    public void addFriendID(Long userID, Long friendID) {
+    @Override
+    public void addFriendId(Long userID, Long friendID) {
         if (!usersFriendsIDS.containsKey(userID)) {
             Set<Long> friendsIDs = new HashSet<>();
             friendsIDs.add(friendID);
@@ -45,12 +49,13 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
-    public Map<Long, Set<Long>> getUsersFriendsIDS() {
-        return usersFriendsIDS;
-    }
-
-    public void deleteFriend(Long userID, Long friendID) {
+    @Override
+    public void deleteFriendId(Long userID, Long friendID) {
         usersFriendsIDS.get(userID).remove(friendID);
     }
 
+    @Override
+    public Map<Long, Set<Long>> getUsersFriendsIds() {
+        return usersFriendsIDS;
+    }
 }

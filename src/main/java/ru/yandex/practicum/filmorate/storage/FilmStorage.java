@@ -12,4 +12,5 @@ public interface FilmStorage {
     void updateFilm(@RequestBody @Valid Film film);
 
     Map<Long, Film> getAllFilms();
+    Film getFilmById(Long filmId);
 }
