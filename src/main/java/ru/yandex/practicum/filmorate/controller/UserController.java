@@ -65,4 +65,3 @@ public class UserController {
         return userService.deleteFriend(userId, friendId);
     }
 }
-

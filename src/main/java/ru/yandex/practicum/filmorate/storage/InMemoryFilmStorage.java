@@ -27,7 +27,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films;
     }
 
-    public Film getFilmById(Long filmId){
+    public Film getFilmById(Long filmId) {
         return films.get(filmId);
     }
 }
