@@ -34,7 +34,7 @@ public class FilmController {
         return filmService.updateFilm(film);
     }
 
-    @GetMapping(value = "/films")
+    @GetMapping(value = "/films  ")
     public ResponseEntity<?> getAllFilms(@RequestBody @Valid Film film) {
         return filmService.getAllFilms();
     }
