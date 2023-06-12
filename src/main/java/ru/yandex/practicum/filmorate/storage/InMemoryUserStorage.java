@@ -14,9 +14,7 @@ import java.util.*;
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
     private final Map<Long, Set<Long>> usersFriendsIDS = new HashMap<>();
-
     private long id = 0;
-
 
     @ExceptionHandler(value = ErrorException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -37,17 +35,22 @@ public class InMemoryUserStorage implements UserStorage {
         return users;
     }
 
-    public void addFriend(User user, User friend) {
-        if (!usersFriendsIDS.containsKey(user.getId())) {
-            Set<Long> friendsIds = new HashSet<>();
-            friendsIds.add(friend.getId());
-            usersFriendsIDS.put(user.getId(), friendsIds);
+    public void addFriendID(Long userID, Long friendID) {
+        if (!usersFriendsIDS.containsKey(userID)) {
+            Set<Long> friendsIDs = new HashSet<>();
+            friendsIDs.add(friendID);
+            usersFriendsIDS.put(userID, friendsIDs);
         } else {
-            usersFriendsIDS.get(user.getId()).add(friend.getId());
+            usersFriendsIDS.get(userID).add(friendID);
         }
     }
 
     public Map<Long, Set<Long>> getUsersFriendsIDS() {
         return usersFriendsIDS;
     }
+
+    public void deleteFriend(Long userID, Long friendID) {
+        usersFriendsIDS.get(userID).remove(friendID);
+    }
+
 }

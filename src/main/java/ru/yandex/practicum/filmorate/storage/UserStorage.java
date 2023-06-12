@@ -14,5 +14,5 @@ public interface UserStorage {
 
     Map<Long, Set<Long>> getUsersFriendsIDS();
 
-    void addFriend(User user, User friend);
+    void addFriendID(Long userID, Long friendID);
 }

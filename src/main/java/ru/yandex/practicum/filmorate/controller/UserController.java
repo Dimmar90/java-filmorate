@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/users")
-    public ResponseEntity<?> getUsers() {
+    public ResponseEntity<?> getAllUsers() {
         return userService.getAllUsers();
     }
 
@@ -55,14 +55,14 @@ public class UserController {
         return userService.getUsersFriends(userId);
     }
 
-//    @GetMapping(value = "/users/{userId}/friends/common/{friendId}")
-//    public ResponseEntity<?> getCommonFriends(@PathVariable long userId, @PathVariable long friendId) {
-//        return userService.getCommonFriends(userId, friendId);
-//    }
+    @GetMapping(value = "/users/{userId}/friends/common/{friendId}")
+    public ResponseEntity<?> getCommonFriends(@PathVariable long userId, @PathVariable long friendId) {
+        return userService.getCommonFriends(userId, friendId);
+    }
 
-//    @DeleteMapping(value = "/users/{userId}/friends/{friendId}")
-//    public ResponseEntity<?> deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
-//        return userService.deleteFriend(userId, friendId);
-//    }
+    @DeleteMapping(value = "/users/{userId}/friends/{friendId}")
+    public ResponseEntity<?> deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
+        return userService.deleteFriend(userId, friendId);
+    }
 }
 
