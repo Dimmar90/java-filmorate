@@ -3,14 +3,11 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.yandex.practicum.filmorate.exception.ErrorException;
-import ru.yandex.practicum.filmorate.exception.ErrorResponse;
+import ru.yandex.practicum.filmorate.exception.ErrorHandler;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
@@ -29,11 +26,7 @@ public class FilmService {
     private final LocalDate date = LocalDate.of(1895, Month.DECEMBER, 28);
     private final Comparator<Film> filmComparator = (film1, film2) -> (int) (film2.getRate() - film1.getRate());
 
-    @ExceptionHandler(value = ErrorException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleFilmErrorException(ErrorException ex) {
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-    }
+    private final ErrorHandler errorHandler = new ErrorHandler();
 
     public FilmService(InMemoryFilmStorage inMemoryFilmStorage, InMemoryUserStorage inMemoryUserStorage) {
         this.inMemoryFilmStorage = inMemoryFilmStorage;
@@ -43,7 +36,7 @@ public class FilmService {
     public ResponseEntity<?> addFilm(Film film) {
         if (film.getReleaseDate().isBefore(date)) {
             log.warn("Wrong Release Date Of Film");
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong Release Date Of Film")), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(errorHandler.handleException(new ErrorException("Wrong Release Date Of Film")), HttpStatus.BAD_REQUEST);
         }
         inMemoryFilmStorage.addFilm(film);
         log.debug("Film Added: {}", film);
@@ -57,7 +50,7 @@ public class FilmService {
             return new ResponseEntity<>(film, HttpStatus.OK);
         } else {
             log.error("Wrong Film Id");
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("User ID Not Found")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorHandler.handleException(new ErrorException("User ID Not Found")), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -70,7 +63,7 @@ public class FilmService {
         if (inMemoryFilmStorage.getAllFilms().containsKey(filmID)) {
             return new ResponseEntity<>(inMemoryFilmStorage.getAllFilms().get(filmID), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Film Id Not Found")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorHandler.handleException(new ErrorException("Film Id Not Found")), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -88,11 +81,11 @@ public class FilmService {
 
         if (!isFilmAdded) {
             log.warn("Wrong Film Id");
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong Film Id")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorHandler.handleException(new ErrorException("Wrong Film Id")), HttpStatus.NOT_FOUND);
         }
         if (!isUserAdded) {
             log.warn("Wrong User Id");
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong User Id")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorHandler.handleException(new ErrorException("Wrong User Id")), HttpStatus.NOT_FOUND);
         }
         inMemoryFilmStorage.getFilmById(filmID).setRate(inMemoryFilmStorage.getFilmById(filmID).getRate() + 1);
         log.debug("Like Added");
@@ -113,11 +106,11 @@ public class FilmService {
 
         if (!isFilmAdded) {
             log.warn("Wrong Film Id");
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong Film Id")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorHandler.handleException(new ErrorException("Wrong Film Id")), HttpStatus.NOT_FOUND);
         }
         if (!isUserAdded) {
             log.warn("Wrong User Id");
-            return new ResponseEntity<>(handleFilmErrorException(new ErrorException("Wrong User Id")), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorHandler.handleException(new ErrorException("Wrong User Id")), HttpStatus.NOT_FOUND);
         }
         inMemoryFilmStorage.getFilmById(filmID).setRate(inMemoryFilmStorage.getFilmById(filmID).getRate() - 1);
         log.debug("Like Deleted");

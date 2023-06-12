@@ -18,12 +18,6 @@ public class FilmController {
         this.filmService = filmService;
     }
 
-    @ExceptionHandler(value = ErrorException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleWrongUserUpdateException(ErrorException ex) {
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
-    }
-
     @PostMapping(value = "/films")
     public ResponseEntity<?> addFilm(@RequestBody @Valid Film film) {
         return filmService.addFilm(film);
@@ -34,7 +28,7 @@ public class FilmController {
         return filmService.updateFilm(film);
     }
 
-    @GetMapping(value = "/films  ")
+    @GetMapping(value = "/films")
     public ResponseEntity<?> getAllFilms(@RequestBody @Valid Film film) {
         return filmService.getAllFilms();
     }
