@@ -3,10 +3,12 @@ package ru.yandex.practicum.filmorate.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
 
@@ -57,9 +59,8 @@ public class FilmController {
     }
 
     @ExceptionHandler()
-    public ResponseEntity<String> badRequestException(IllegalStateException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(e.getMessage());
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> notFoundException(final IllegalStateException e) {
+        return Map.of("Error", e.getMessage());
     }
 }

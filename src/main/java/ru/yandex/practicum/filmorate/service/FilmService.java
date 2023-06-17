@@ -30,12 +30,12 @@ public class FilmService {
         if (film.getDuration() <= 0) {
             String msg = "Wrong Duration Of Film";
             log.warn(msg);
-            throw new ErrorException(msg);
+            throw new IllegalStateException(msg);
         }
         if (film.getReleaseDate().isBefore(firstFilmRelease)) {
             String msg = "Wrong Release Date Of Film";
             log.warn(msg);
-             throw new IllegalStateException(msg);
+            throw new IllegalStateException(msg);
         }
         inMemoryFilmStorage.addFilm(film);
         log.debug("Film Added: {}", film);
