@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
