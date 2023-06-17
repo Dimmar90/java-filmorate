@@ -20,12 +20,4 @@ public class User {
 
     @Past(message = "Wrong user birthday")
     private LocalDate birthday;
-
-    public User(long id, String email, String name, String login, LocalDate birthday) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-        this.login = login;
-        this.birthday = birthday;
-    }
 }
