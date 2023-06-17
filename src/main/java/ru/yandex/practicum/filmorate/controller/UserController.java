@@ -19,13 +19,13 @@ public class UserController {
     @PostMapping(value = "/users")
     public ResponseEntity<?> createUser(@RequestBody @Valid User user) {
         userService.createUser(user);
-        return new ResponseEntity<>("User Added", HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/users")
     public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
         userService.updateUser(user);
-        return new ResponseEntity<>("User Updated", HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(value = "/users")
