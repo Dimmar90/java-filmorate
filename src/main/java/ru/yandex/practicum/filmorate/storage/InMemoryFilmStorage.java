@@ -3,8 +3,8 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -23,12 +23,35 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Map<Long, Film> getAllFilms() {
-        return films;
+    public Optional<Film> findFilmById(Long filmId) {
+        return Optional.ofNullable(films.get(filmId));
     }
 
     @Override
-    public Film getFilmById(Long filmId) {
-        return films.get(filmId);
+    public List<Film> findAllFilms() {
+        return new ArrayList<>(films.values());
+    }
+
+    @Override
+    public void addLike(Long filmId) {
+        films.get(filmId).setRate(films.get(filmId).getRate() + 1);
+    }
+
+    @Override
+    public void deleteLike(Long filmId) {
+        films.get(filmId).setRate(films.get(filmId).getRate() - 1);
+    }
+
+    @Override
+    public List<Film> findMostPopularFilms(String count) {
+        int maxSize;
+        if (count == null) {
+            maxSize = 10;
+        } else {
+            maxSize = Integer.parseInt(count);
+        }
+        return findAllFilms().stream()
+                .sorted(Comparator.comparing(Film::getRate).reversed())
+                .limit(maxSize).collect(Collectors.toList());
     }
 }

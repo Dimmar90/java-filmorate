@@ -3,10 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -26,8 +23,13 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Map<Long, User> getUsers() {
-        return users;
+    public Optional<User> findUserById(Long userId) {
+        return Optional.ofNullable(users.get(userId));
+    }
+
+    @Override
+    public List<User> findAllUsers() {
+        return new ArrayList<>(users.values());
     }
 
     @Override
@@ -42,12 +44,34 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
+    public List<User> findUsersFriends(Long userId) {
+        List<User> usersFriends = new ArrayList<>();
+        for (Long friendId : usersFriendsIDS.get(userId)) {
+            usersFriends.add(users.get(friendId));
+        }
+        return usersFriends;
+    }
+
+    @Override
+    public List<User> findCommonFriends(Long userId, Long friendId) {
+        List<User> commonFriends = new ArrayList<>();
+        for (Long userFriendId : usersFriendsIDS.get(userId)) {
+            if (usersFriendsIDS.get(friendId).contains(userFriendId)) {
+                commonFriends.add(users.get(userFriendId));
+            }
+        }
+        return commonFriends;
+    }
+
+    @Override
     public void deleteFriendId(Long userID, Long friendID) {
         usersFriendsIDS.get(userID).remove(friendID);
     }
 
     @Override
-    public Map<Long, Set<Long>> getUsersFriendsIds() {
-        return usersFriendsIDS;
+    public boolean isUsersFriend(Long userId, Long friendId) {
+        boolean isUsersFriend;
+        isUsersFriend = usersFriendsIDS.get(userId).contains(friendId);
+        return isUsersFriend;
     }
 }
