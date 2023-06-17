@@ -20,13 +20,13 @@ public class FilmController {
     @PostMapping(value = "/films")
     public ResponseEntity<?> addFilm(@RequestBody @Valid Film film) {
         filmService.addFilm(film);
-        return new ResponseEntity<>("Film Added", HttpStatus.CREATED);
+        return new ResponseEntity<>(film, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/films")
     public ResponseEntity<?> updateFilm(@RequestBody @Valid Film film) {
         filmService.updateFilm(film);
-        return new ResponseEntity<>("Film Updated", HttpStatus.CREATED);
+        return new ResponseEntity<>(film, HttpStatus.OK);
     }
 
     @GetMapping(value = "/films")
@@ -54,5 +54,12 @@ public class FilmController {
     @GetMapping(value = "/films/popular")
     public ResponseEntity<?> getPopularFilms(@RequestParam(required = false) String count) {
         return new ResponseEntity<>(filmService.getPopularFilms(count), HttpStatus.OK);
+    }
+
+    @ExceptionHandler()
+    public ResponseEntity<String> badRequestException(IllegalStateException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
     }
 }

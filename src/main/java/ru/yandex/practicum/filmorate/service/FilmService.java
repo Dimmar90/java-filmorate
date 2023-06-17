@@ -11,7 +11,8 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FilmService {
@@ -26,10 +27,15 @@ public class FilmService {
     }
 
     public void addFilm(Film film) {
+        if (film.getDuration() <= 0) {
+            String msg = "Wrong Duration Of Film";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
         if (film.getReleaseDate().isBefore(firstFilmRelease)) {
             String msg = "Wrong Release Date Of Film";
             log.warn(msg);
-            throw new ErrorException(msg);
+             throw new IllegalStateException(msg);
         }
         inMemoryFilmStorage.addFilm(film);
         log.debug("Film Added: {}", film);
