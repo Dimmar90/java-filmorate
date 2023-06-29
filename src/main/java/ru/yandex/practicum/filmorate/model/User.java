@@ -10,7 +10,7 @@ public class User {
     @NotNull
     private long id;
 
-    @Email(message = "Wrong user email format")
+    @Email(message = "Wrong User Email Format")
     private String email;
 
     private String name;
