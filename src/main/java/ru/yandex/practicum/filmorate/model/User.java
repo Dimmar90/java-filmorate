@@ -15,7 +15,7 @@ public class User {
 
     private String name;
 
-    @Pattern(regexp = "\\S+", message = "Login contains whitespace")
+    @Pattern(regexp = "\\S+", message = "Login Contains Whitespace")
     private String login;
 
     @Past(message = "Wrong user birthday")
