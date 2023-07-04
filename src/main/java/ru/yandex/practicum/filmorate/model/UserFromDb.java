@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class User {
+public class UserFromDb {
     @NotNull
     @Id
     private long id;
@@ -28,5 +28,5 @@ public class User {
     @Past(message = "Wrong user birthday")
     private Date birthday;
 
-    private Integer status_id;
+    private String status;
 }
