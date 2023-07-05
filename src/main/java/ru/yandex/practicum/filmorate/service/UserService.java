@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.UserFromDb;
+import ru.yandex.practicum.filmorate.model.UserWithStatus;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private UserStorage userStorage;
+    private final UserStorage userStorage;
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     public UserService(UserStorage userStorage) {
@@ -28,7 +28,7 @@ public class UserService {
         userStorage.addUser(user);
     }
 
-    public UserFromDb getUserById(long userId) {
+    public User getUserById(long userId) {
         if (userStorage.findUserById(userId) == null) {
             String msg = "User With This Id Does Not Exist";
             log.warn(msg);
@@ -38,7 +38,7 @@ public class UserService {
         return userStorage.findUserById(userId);
     }
 
-    public List<UserFromDb> getAllUsers() {
+    public List<User> getAllUsers() {
         log.debug("Get All Users");
         return userStorage.findAllUsers();
     }
@@ -69,68 +69,48 @@ public class UserService {
             log.warn(msg);
             throw new ErrorException(msg);
         }
-        userStorage.addFriend(userId,friendId);
+         userStorage.addFriend(userId,friendId);
+        log.debug("Friend Added");
     }
 
-//    public void addFriend(long userId, long friendId) {
-//        if (inMemoryUserStorage.findUserById(userId).isEmpty()) {
-//            String msg = "User With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        if (inMemoryUserStorage.findUserById(friendId).isEmpty()) {
-//            String msg = "Friend With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        inMemoryUserStorage.addFriendId(userId, friendId);
-//        inMemoryUserStorage.addFriendId(friendId, userId);
-//        log.debug("Friend Added");
-//    }
+    public List<UserWithStatus> getUsersFriends(long userId) {
+        if (userStorage.findUserById(userId) == null) {
+            String msg = "User With This Id Does Not Exist";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        } else {
+            return userStorage.findUsersFriends(userId);
+        }
+    }
 
-//    public List<User> getUsersFriends(long userId) {
-//        if (inMemoryUserStorage.findUserById(userId).isEmpty()) {
-//            String msg = "User With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        } else {
-//            return inMemoryUserStorage.findUsersFriends(userId);
-//        }
-//    }
+    public List<User> getCommonFriends(long userId, long friendId) {
+        if (userStorage.findUserById(userId) == null) {
+            String msg = "User With This Id Does Not Exist";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        if (userStorage.findUserById(friendId) == null) {
+            String msg = "Friend With This Id Does Not Exist";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        log.debug("Get Common Friends");
+        return userStorage.findCommonFriends(userId, friendId);
+    }
 
-//    public List<User> getCommonFriends(long userId, long friendId) {
-//        if (inMemoryUserStorage.findUserById(userId).isEmpty()) {
-//            String msg = "User With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        if (inMemoryUserStorage.findUserById(friendId).isEmpty()) {
-//            String msg = "Friend With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        log.debug("Get Common Friends");
-//        return inMemoryUserStorage.findCommonFriends(userId, friendId);
-//    }
-
-//    public void deleteFriend(long userId, long friendId) {
-//        if (inMemoryUserStorage.findUserById(userId).isEmpty()) {
-//            String msg = "User With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        if (inMemoryUserStorage.findUserById(friendId).isEmpty()) {
-//            String msg = "Friend With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        if (!inMemoryUserStorage.isUsersFriend(userId, friendId)) {
-//            String msg = "Not Found Friend In FriendList";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        inMemoryUserStorage.deleteFriendId(userId, friendId);
-//        inMemoryUserStorage.deleteFriendId(friendId, userId);
-//        log.debug("Friend Deleted");
-//    }
+    public void deleteFriend(long userId, long friendId) {
+        if (userStorage.findUserById(userId) == null) {
+            String msg = "User With This Id Does Not Exist";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        if (userStorage.findUserById(friendId) == null) {
+            String msg = "Friend With This Id Does Not Exist";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        userStorage.deleteFriendId(userId, friendId);
+        userStorage.deleteFriendId(friendId, userId);
+        log.debug("Friend Deleted");
+    }
 }

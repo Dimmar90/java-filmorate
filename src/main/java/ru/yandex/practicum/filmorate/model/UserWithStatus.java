@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class UserFromDb {
+public class UserWithStatus {
     @NotNull
     @Id
     private long id;

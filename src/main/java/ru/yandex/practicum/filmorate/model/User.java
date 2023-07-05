@@ -27,6 +27,4 @@ public class User {
 
     @Past(message = "Wrong user birthday")
     private Date birthday;
-
-    private Integer status_id;
 }
