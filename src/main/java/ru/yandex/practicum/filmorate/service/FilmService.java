@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmWithGenres;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -40,7 +39,7 @@ public class FilmService {
         log.debug("Film Added: {}", film);
     }
 
-    public FilmWithGenres getFilmById(long filmID) {
+    public Film getFilmById(long filmID) {
         if (filmStorage.findFilmById(filmID) == null) {
             String msg = "Film With This Id Does Not Exist";
             log.warn(msg);
@@ -61,7 +60,7 @@ public class FilmService {
         }
     }
 
-    public List<FilmWithGenres> getAllFilms() {
+    public List<Film> getAllFilms() {
         log.debug("Get All Films");
         return filmStorage.findAllFilms();
     }

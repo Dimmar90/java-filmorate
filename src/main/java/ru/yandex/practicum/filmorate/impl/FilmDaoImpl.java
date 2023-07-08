@@ -6,7 +6,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmWithGenres;
+import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,33 +30,38 @@ public class FilmDaoImpl implements FilmDao {
         jdbcTemplate.update("INSERT INTO FILMS VALUES(?,?,?,?,?,?,?)",
                 film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), film.getRate());
         if (film.getGenres() != null) {
-            for (Integer genreId : film.getGenres()) {
-                jdbcTemplate.update("INSERT INTO FILM_GENRES VALUES(?,?)", film.getId(), genreId);
+            for (Genre genre : film.getGenres()) {
+                jdbcTemplate.update("INSERT INTO FILM_GENRES VALUES(?,?)", film.getId(), genre.getId());
             }
         }
     }
 
     @Override
-    public FilmWithGenres findFilmById(long filmID) {
-        FilmWithGenres film = new FilmWithGenres();
-        List<String> listOfGenres = new ArrayList<>();
-        String sqlForFilmWithMpa = "SELECT f.ID ,f.NAME ,f.DESCRIPTION ,f.RELEASE_DATE ,f.DURATION ,m.MPA, f.RATE  \n" +
+    public Film findFilmById(long filmID) {
+        Film film = new Film();
+        List<Genre> listOfGenres = new ArrayList<>();
+        String sqlForFilm = "SELECT * FROM FILMS f WHERE f.ID =?";
+        String sqlForNpa = "SELECT m.MPA_ID, m.MPA \n" +
                 "FROM FILMS f LEFT JOIN MPA m ON f.MPA_ID = m.MPA_ID \n" +
-                "WHERE f.ID =?";
-        String sqlForGenres = "SELECT DISTINCT g.GENRE_NAME \n" +
-                "FROM FILM_GENRES fg LEFT JOIN GENRE g ON fg.GENRE_ID = g.GENRE_ID \n" +
-                "WHERE fg.FILM_ID =?";
+                "WHERE f.ID = ?";
+        String sqlForGenres = "SELECT DISTINCT FG.GENRE_ID, g.GENRE_NAME  \n" +
+                "FROM FILM_GENRES fg LEFT JOIN GENRE g ON FG .GENRE_ID = g.GENRE_ID \n" +
+                "WHERE FG.FILM_ID =?";
 
-        film = jdbcTemplate.query(sqlForFilmWithMpa, new Object[]{filmID},
-                new BeanPropertyRowMapper<>(FilmWithGenres.class)).stream().findAny().orElse(null);
-
-        SqlRowSet genresRow = jdbcTemplate.queryForRowSet(sqlForGenres, filmID);
-        while (genresRow.next()) {
-            String genreName = genresRow.getString("GENRE_NAME");
-            listOfGenres.add(genreName);
+        film = jdbcTemplate.query(sqlForFilm, new Object[]{filmID},
+                new BeanPropertyRowMapper<>(Film.class)).stream().findAny().orElse(null);
+        SqlRowSet mpaRow = jdbcTemplate.queryForRowSet(sqlForNpa, filmID);
+        if (mpaRow.first()) {
+            film.getMpa().setId(mpaRow.getInt("MPA_ID"));
+            film.getMpa().setName(mpaRow.getString("MPA"));
         }
-
-        film.setGenres(listOfGenres);
+        SqlRowSet genreRow = jdbcTemplate.queryForRowSet(sqlForGenres, filmID);
+        while (genreRow.next()) {
+            Genre genre = new Genre();
+            genre.setId(genreRow.getInt("GENRE_ID"));
+            genre.setName(genreRow.getString("GENRE_NAME"));
+            film.getGenres().add(genre);
+        }
         return film;
     }
 
@@ -68,25 +73,14 @@ public class FilmDaoImpl implements FilmDao {
     }
 
     @Override
-    public List<FilmWithGenres> getAllFilms() {
-        List<FilmWithGenres> filmsList = new ArrayList<>();
-        String sqlFilmWithMpa = "SELECT f.ID ,f.NAME ,f.DESCRIPTION ,f.RELEASE_DATE ,f.DURATION ,m.MPA, f.RATE   \n" +
-                "FROM FILMS f LEFT JOIN MPA m ON f.MPA_ID = m.MPA_ID ";
-        String sqlForGenres = "SELECT DISTINCT g.GENRE_NAME \n" +
-                "FROM FILM_GENRES fg LEFT JOIN GENRE g ON fg.GENRE_ID = g.GENRE_ID \n" +
-                "WHERE fg.FILM_ID =?";
-
-        filmsList = jdbcTemplate.query(sqlFilmWithMpa, new BeanPropertyRowMapper<>(FilmWithGenres.class));
-        for (FilmWithGenres film : filmsList) {
-            List<String> listOfGenres = new ArrayList<>();
-            SqlRowSet genresRow = jdbcTemplate.queryForRowSet(sqlForGenres, film.getId());
-            while (genresRow.next()) {
-                String genreName = genresRow.getString("GENRE_NAME");
-                listOfGenres.add(genreName);
-            }
-            film.setGenres(listOfGenres);
+    public List<Film> getAllFilms() {
+        List<Film> films = new ArrayList<>();
+        String sqlForIds = "SELECT f.ID FROM FILMS f";
+        SqlRowSet idsRow = jdbcTemplate.queryForRowSet(sqlForIds);
+        while (idsRow.next()) {
+            films.add(findFilmById(idsRow.getInt("ID")));
         }
-        return filmsList;
+        return films;
     }
 
     @Override

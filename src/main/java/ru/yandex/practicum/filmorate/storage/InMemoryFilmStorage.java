@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmWithGenres;
 
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public FilmWithGenres findFilmById(Long filmId) {
+    public Film findFilmById(Long filmId) {
         return filmDao.findFilmById(filmId);
     }
 
@@ -37,7 +36,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<FilmWithGenres> findAllFilms() {
+    public List<Film> findAllFilms() {
         return filmDao.getAllFilms();
     }
 

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dao;
 
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmWithGenres;
 
 import java.util.List;
 
@@ -11,11 +10,11 @@ public interface FilmDao {
 
     void addFilm(Film film);
 
-    FilmWithGenres findFilmById(long filmID);
+    Film findFilmById(long filmID);
 
     void updateFilm(Film film);
 
-    List<FilmWithGenres> getAllFilms();
+    List<Film> getAllFilms();
 
     void addLike(Long filmId);
 
