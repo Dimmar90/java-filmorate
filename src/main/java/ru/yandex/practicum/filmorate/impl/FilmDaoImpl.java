@@ -28,7 +28,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void addFilm(Film film) {
         jdbcTemplate.update("INSERT INTO FILMS VALUES(?,?,?,?,?,?,?)",
-                film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpaId(), film.getRate());
+                film.getId(), film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), film.getRate());
         if (film.getGenres() != null) {
             for (Integer genreId : film.getGenres()) {
                 jdbcTemplate.update("INSERT INTO FILM_GENRES VALUES(?,?)", film.getId(), genreId);
