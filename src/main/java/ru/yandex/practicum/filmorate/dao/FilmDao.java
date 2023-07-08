@@ -13,8 +13,12 @@ public interface FilmDao {
     FilmWithGenres findFilmById(long filmID);
 
     void updateFilm(Film film);
+
     List<FilmWithGenres> getAllFilms();
+
     void addLike(Long filmId);
+
     void deleteLike(long filmId);
+
     List<Film> getPopularFilms(long listSize);
 }
