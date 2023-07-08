@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.FilmWithGenres;
 import java.util.List;
 
 public interface FilmDao {
+
     Film findLastFilm();
 
     void addFilm(Film film);
