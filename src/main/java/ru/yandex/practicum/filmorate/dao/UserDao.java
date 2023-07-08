@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.UserWithStatus;
 import java.util.List;
 
 public interface UserDao {
-    
     User findUserById(Long id);
 
     List<User> getAllUsers();
