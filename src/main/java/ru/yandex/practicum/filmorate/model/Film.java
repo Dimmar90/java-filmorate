@@ -17,7 +17,7 @@ public class Film {
     @Size(min = 1, max = 200)
     private String description;
     private int duration;
-    private Date release_Date;
+    private Date releaseDate;
     private int mpaId;
     private long rate;
     private List<Integer> genres;
