@@ -30,7 +30,7 @@ public class FilmService {
             log.warn(msg);
             throw new IllegalStateException(msg);
         }
-        if (film.getRelease_Date().after(firstFilmRelease)) {
+        if (film.getReleaseDate().after(firstFilmRelease)) {
             String msg = "Wrong Release Date Of Film";
             log.warn(msg);
             throw new IllegalStateException(msg);
