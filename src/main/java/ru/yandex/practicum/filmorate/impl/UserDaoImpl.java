@@ -64,8 +64,6 @@ public class UserDaoImpl implements UserDao {
             statusId = statusRow.getInt("STATUS_ID");
         }
         try {
-            if (statusId == 2 && request == null) {
-            }
             if (statusId == 2 && request.equals("added")) {
                 jdbcTemplate.update("UPDATE FRIENDS \n" +
                         "SET REQUEST_FOR_FRIENDSHIP = NULL,\n" +
@@ -75,8 +73,6 @@ public class UserDaoImpl implements UserDao {
                         "SET REQUEST_FOR_FRIENDSHIP = NULL,\n" +
                         "STATUS_ID =1\n" +
                         "WHERE ID_USER =? AND ID_FRIEND=?", friendId, userId);
-            }
-            if (statusId == 1 && request == null) {
             }
         } catch (NullPointerException e) {
             jdbcTemplate.update("INSERT INTO FRIENDS VALUES (?,?,?,?)", userId, friendId, null, 2);
@@ -121,12 +117,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void deleteFriend(Long userID, Long friendID){
+    public void deleteFriend(Long userID, Long friendID) {
         String sql = "DELETE \n" +
                 "FROM FRIENDS f \n" +
                 "WHERE f.ID_USER =? AND f.ID_FRIEND =?";
-        jdbcTemplate.update(sql,userID,friendID);
-        jdbcTemplate.update(sql,friendID,userID);
+        jdbcTemplate.update(sql, userID, friendID);
+        jdbcTemplate.update(sql, friendID, userID);
     }
 }
 

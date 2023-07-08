@@ -13,11 +13,6 @@ public class Status {
 
     private String status;
 
-//    public Status(Integer status_Id, String status) {
-//        this.status_Id = status_Id;
-//        this.status = status;
-//    }
-
     public Status() {
     }
 }

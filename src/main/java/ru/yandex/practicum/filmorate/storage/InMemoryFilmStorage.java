@@ -1,57 +1,58 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmWithGenres;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    private final Map<Long, Film> films = new HashMap<>();
-    private long id = 0;
+    private static FilmDao filmDao;
+
+    public InMemoryFilmStorage(FilmDao filmDao) {
+        this.filmDao = filmDao;
+    }
 
     @Override
     public void addFilm(Film film) {
-        film.setId(++id);
-        films.put(film.getId(), film);
+        if (filmDao.findLastFilm() == null) {
+            film.setId(1);
+            filmDao.addFilm(film);
+        } else {
+            film.setId(filmDao.findLastFilm().getId() + 1);
+            filmDao.addFilm(film);
+        }
+    }
+
+    @Override
+    public FilmWithGenres findFilmById(Long filmId) {
+        return filmDao.findFilmById(filmId);
     }
 
     @Override
     public void updateFilm(Film film) {
-        films.put(film.getId(), film);
+        filmDao.updateFilm(film);
     }
 
     @Override
-    public Optional<Film> findFilmById(Long filmId) {
-        return Optional.ofNullable(films.get(filmId));
-    }
-
-    @Override
-    public List<Film> findAllFilms() {
-        return new ArrayList<>(films.values());
+    public List<FilmWithGenres> findAllFilms() {
+        return filmDao.getAllFilms();
     }
 
     @Override
     public void addLike(Long filmId) {
-        films.get(filmId).setRate(films.get(filmId).getRate() + 1);
+        filmDao.addLike(filmId);
     }
 
     @Override
     public void deleteLike(Long filmId) {
-        films.get(filmId).setRate(films.get(filmId).getRate() - 1);
+        filmDao.deleteLike(filmId);
     }
 
     @Override
-    public List<Film> findMostPopularFilms(String count) {
-        int maxSize;
-        if (count == null) {
-            maxSize = 10;
-        } else {
-            maxSize = Integer.parseInt(count);
-        }
-        return findAllFilms().stream()
-                .sorted(Comparator.comparing(Film::getRate).reversed())
-                .limit(maxSize).collect(Collectors.toList());
+    public List<Film> findMostPopularFilms(long listSize){
+        return filmDao.getPopularFilms(listSize);
     }
 }

@@ -1,104 +1,105 @@
-//
-//package ru.yandex.practicum.filmorate.service;
-//
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.stereotype.Service;
-//import ru.yandex.practicum.filmorate.exception.ErrorException;
-//import ru.yandex.practicum.filmorate.model.Film;
-//import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-//import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-//
-//import java.time.LocalDate;
-//import java.time.Month;
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Service
-//public class FilmService {
-//    private final InMemoryFilmStorage inMemoryFilmStorage;
-//    private final InMemoryUserStorage inMemoryUserStorage;
-//    private final Logger log = LoggerFactory.getLogger(FilmService.class);
-//    private final LocalDate firstFilmRelease = LocalDate.of(1895, Month.DECEMBER, 28);
-//
-//    public FilmService(InMemoryFilmStorage inMemoryFilmStorage, InMemoryUserStorage inMemoryUserStorage) {
-//        this.inMemoryFilmStorage = inMemoryFilmStorage;
-//        this.inMemoryUserStorage = inMemoryUserStorage;
-//    }
-//
-//    public void addFilm(Film film) {
-//        if (film.getDuration() <= 0) {
-//            String msg = "Wrong Duration Of Film";
-//            log.warn(msg);
-//            throw new IllegalStateException(msg);
-//        }
-//        if (film.getReleaseDate().isBefore(firstFilmRelease)) {
-//            String msg = "Wrong Release Date Of Film";
-//            log.warn(msg);
-//            throw new IllegalStateException(msg);
-//        }
-//        inMemoryFilmStorage.addFilm(film);
-//        log.debug("Film Added: {}", film);
-//    }
-//
-//    public void updateFilm(Film film) {
-//        if (inMemoryFilmStorage.findFilmById(film.getId()).isEmpty()) {
-//            String msg = "Film With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        } else {
-//            inMemoryFilmStorage.updateFilm(film);
-//            log.debug("Film Updated");
-//        }
-//    }
-//
-//    public List<Film> getAllFilms() {
-//        log.debug("Get All Films");
-//        return inMemoryFilmStorage.findAllFilms();
-//    }
-//
-//    public Optional<Film> getFilmById(long filmID) {
-//        if (inMemoryFilmStorage.findFilmById(filmID).isEmpty()) {
-//            String msg = "Film With This Id Does Not Exist";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        log.debug("Get Film By Id");
-//        return inMemoryFilmStorage.findFilmById(filmID);
-//    }
-//
-//    public void addLike(long filmID, long userId) {
-//        if (inMemoryFilmStorage.findFilmById(filmID).isEmpty()) {
-//            String msg = "Wrong Film Id";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        if (inMemoryUserStorage.findUserById(userId).isEmpty()) {
-//            String msg = "Wrong User Id";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        inMemoryFilmStorage.addLike(filmID);
-//        log.debug("Like Added");
-//    }
-//
-//    public void deleteLike(long filmID, long userId) {
-//        if (inMemoryFilmStorage.findFilmById(filmID).isEmpty()) {
-//            String msg = "Wrong Film Id";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        if (inMemoryUserStorage.findUserById(userId).isEmpty()) {
-//            String msg = "Wrong User Id";
-//            log.warn(msg);
-//            throw new ErrorException(msg);
-//        }
-//        inMemoryFilmStorage.deleteLike(filmID);
-//        log.debug("Like Deleted");
-//    }
-//
-//    public List<Film> getPopularFilms(String count) {
-//        log.debug("Get Popular Films");
-//        return inMemoryFilmStorage.findMostPopularFilms(count);
-//    }
-//}
+package ru.yandex.practicum.filmorate.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.ErrorException;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmWithGenres;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
+
+import java.util.Date;
+import java.util.List;
+
+@Service
+public class FilmService {
+    private UserStorage userStorage;
+    private FilmStorage filmStorage;
+    private final Logger log = LoggerFactory.getLogger(FilmService.class);
+    private final Date firstFilmRelease = new Date(1895, 12, 28);
+
+    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
+    }
+
+    public void addFilm(Film film) {
+        if (film.getDuration() <= 0) {
+            String msg = "Wrong Duration Of Film";
+            log.warn(msg);
+            throw new IllegalStateException(msg);
+        }
+        if (film.getRelease_Date().after(firstFilmRelease)) {
+            String msg = "Wrong Release Date Of Film";
+            log.warn(msg);
+            throw new IllegalStateException(msg);
+        }
+        filmStorage.addFilm(film);
+        log.debug("Film Added: {}", film);
+    }
+
+    public FilmWithGenres getFilmById(long filmID) {
+        if (filmStorage.findFilmById(filmID) == null) {
+            String msg = "Film With This Id Does Not Exist";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        log.debug("Get Film By Id");
+        return filmStorage.findFilmById(filmID);
+    }
+
+    public void updateFilm(Film film) {
+        if (filmStorage.findFilmById(film.getId()) == null) {
+            String msg = "Film With This Id Does Not Exist";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        } else {
+            filmStorage.updateFilm(film);
+            log.debug("Film Updated");
+        }
+    }
+
+    public List<FilmWithGenres> getAllFilms() {
+        log.debug("Get All Films");
+        return filmStorage.findAllFilms();
+    }
+
+    public void addLike(long filmID, long userId) {
+        if (filmStorage.findFilmById(filmID) == null) {
+            String msg = "Wrong Film Id";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        if (filmStorage.findFilmById(filmID) == null) {
+            String msg = "Wrong User Id";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        filmStorage.addLike(filmID);
+        log.debug("Like Added");
+    }
+
+    public void deleteLike(long filmID, long userId) {
+        if (filmStorage.findFilmById(filmID) == null) {
+            String msg = "Wrong Film Id";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        if (userStorage.findUserById(userId) == null) {
+            String msg = "Wrong User Id";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        }
+        filmStorage.deleteLike(filmID);
+        log.debug("Like Deleted");
+    }
+
+    public List<Film> getPopularFilms(String count) {
+        if (count == null) {
+            return filmStorage.findMostPopularFilms(10);
+        } else {
+            return filmStorage.findMostPopularFilms(Long.parseLong(count));
+        }
+    }
+}
