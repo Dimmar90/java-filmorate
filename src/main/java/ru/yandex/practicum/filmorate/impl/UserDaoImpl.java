@@ -60,7 +60,7 @@ public class UserDaoImpl implements UserDao {
             str = isExistRow.getInt("ID_USER");
         }
         if (str == null) {
-            jdbcTemplate.update("INSERT INTO FRIENDS VALUES (?,?,?,?)", userId, friendId, null, 2);
+            jdbcTemplate.update("INSERT INTO FRIENDS VALUES (?,?,?)", userId, friendId, null, 2);
         }
 
         SqlRowSet statusRow = jdbcTemplate.queryForRowSet(sql, friendId, userId);
