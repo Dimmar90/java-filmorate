@@ -34,7 +34,6 @@ public class FilmDaoImpl implements FilmDao {
                 jdbcTemplate.update("INSERT INTO FILM_GENRES VALUES(?,?)", film.getId(), genreId);
             }
         }
-        
     }
 
     @Override
