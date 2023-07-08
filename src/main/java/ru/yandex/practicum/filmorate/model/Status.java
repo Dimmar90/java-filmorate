@@ -9,7 +9,7 @@ import javax.persistence.Id;
 @Entity
 public class Status {
     @Id
-    private Integer status_Id;
+    private Integer statusId;
 
     private String status;
 
