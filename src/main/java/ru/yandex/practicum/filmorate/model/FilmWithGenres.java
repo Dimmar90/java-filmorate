@@ -15,7 +15,7 @@ public class FilmWithGenres {
     @Size(min = 1, max = 200)
     private String description;
     private int duration;
-    private Date release_Date;
+    private Date releaseDate;
     private long rate;
     private String mpa;
     private List<String> genres;

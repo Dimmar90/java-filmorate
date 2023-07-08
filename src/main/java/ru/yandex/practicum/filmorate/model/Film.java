@@ -18,7 +18,7 @@ public class Film {
     private String description;
     private int duration;
     private Date release_Date;
-    private int mpa_Id;
+    private int mpaId;
     private long rate;
     private List<Integer> genres;
 }
