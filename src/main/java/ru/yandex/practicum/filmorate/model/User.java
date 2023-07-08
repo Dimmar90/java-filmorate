@@ -8,11 +8,12 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @Entity
 public class User {
+
     @NotNull
     @Id
     private long id;
@@ -26,5 +27,5 @@ public class User {
     private String email;
 
     @Past(message = "Wrong user birthday")
-    private Date birthday;
+    private LocalDate birthday;
 }
