@@ -2,8 +2,10 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
 
-import javax.validation.constraints.*;
-import java.util.Date;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -15,7 +17,7 @@ public class FilmWithGenres {
     @Size(min = 1, max = 200)
     private String description;
     private int duration;
-    private Date releaseDate;
+    private LocalDate releaseDate;
     private long rate;
     private String mpa;
     private List<String> genres;

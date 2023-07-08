@@ -5,7 +5,8 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 
 @Data
@@ -17,8 +18,9 @@ public class Film {
     @Size(min = 1, max = 200)
     private String description;
     private int duration;
-    private Date releaseDate;
+    private LocalDate releaseDate;
     private int mpaId;
+    private HashMap<Integer, String> mpa;
     private long rate;
     private List<Integer> genres;
 }

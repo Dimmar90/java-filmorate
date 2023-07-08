@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.FilmWithGenres;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -17,7 +17,8 @@ public class FilmService {
     private UserStorage userStorage;
     private FilmStorage filmStorage;
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
-    private final Date firstFilmRelease = new Date(1895, 12, 28);
+    private final LocalDate firstFilmRelease = LocalDate.of(1895,12,12);
+
 
     public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
@@ -30,7 +31,7 @@ public class FilmService {
             log.warn(msg);
             throw new IllegalStateException(msg);
         }
-        if (film.getReleaseDate().after(firstFilmRelease)) {
+        if (film.getReleaseDate().isBefore(firstFilmRelease)) {
             String msg = "Wrong Release Date Of Film";
             log.warn(msg);
             throw new IllegalStateException(msg);
