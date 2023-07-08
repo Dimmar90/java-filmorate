@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.UserWithStatus;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
@@ -69,11 +68,11 @@ public class UserService {
             log.warn(msg);
             throw new ErrorException(msg);
         }
-         userStorage.addFriend(userId,friendId);
+        userStorage.addFriend(userId, friendId);
         log.debug("Friend Added");
     }
 
-    public List<UserWithStatus> getUsersFriends(long userId) {
+    public List<User> getUsersFriends(long userId) {
         if (userStorage.findUserById(userId) == null) {
             String msg = "User With This Id Does Not Exist";
             log.warn(msg);

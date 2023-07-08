@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.UserWithStatus;
 
 import java.util.*;
 
@@ -47,7 +46,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<UserWithStatus> findUsersFriends(Long userId) {
+    public List<User> findUsersFriends(Long userId) {
         return userDao.getUserFriends(userId);
     }
 

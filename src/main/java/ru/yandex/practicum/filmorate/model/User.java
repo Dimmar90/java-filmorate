@@ -28,4 +28,8 @@ public class User {
 
     @Past(message = "Wrong user birthday")
     private LocalDate birthday;
+
+    private String friendshipStatus = new FriendshipStatus().getStatus();
+
+    private String status;
 }

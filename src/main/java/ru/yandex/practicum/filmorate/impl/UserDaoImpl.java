@@ -51,37 +51,39 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void addFriend(Long userId, Long friendId) {
-        String request = null;
-        Integer statusId = null;
-        String sqlForRequest = "SELECT REQUEST_FOR_FRIENDSHIP FROM FRIENDS f WHERE ID_USER =? AND ID_FRIEND=?";
-        String sqlForStatusId = "SELECT STATUS_ID  FROM FRIENDS f WHERE ID_USER =? AND ID_FRIEND=?";
-        SqlRowSet requestRow = jdbcTemplate.queryForRowSet(sqlForRequest, userId, friendId);
-        SqlRowSet statusRow = jdbcTemplate.queryForRowSet(sqlForStatusId, userId, friendId);
-        if (requestRow.first()) {
-            request = requestRow.getString("REQUEST_FOR_FRIENDSHIP");
+        Integer str = null;
+        Integer status = null;
+        String sql = "SELECT *\n" +
+                "FROM FRIENDS f \n" +
+                "WHERE f.ID_USER=? AND f.ID_FRIEND =?";
+        SqlRowSet isExistRow = jdbcTemplate.queryForRowSet(sql, userId, friendId);
+        if (isExistRow.first()) {
+            str = isExistRow.getInt("ID_USER");
         }
-        if (statusRow.first()) {
-            statusId = statusRow.getInt("STATUS_ID");
-        }
-        try {
-            if (statusId == 2 && request.equals("added")) {
-                jdbcTemplate.update("UPDATE FRIENDS \n" +
-                        "SET REQUEST_FOR_FRIENDSHIP = NULL,\n" +
-                        "STATUS_ID =1\n" +
-                        "WHERE ID_USER =? AND ID_FRIEND=?", userId, friendId);
-                jdbcTemplate.update("UPDATE FRIENDS \n" +
-                        "SET REQUEST_FOR_FRIENDSHIP = NULL,\n" +
-                        "STATUS_ID =1\n" +
-                        "WHERE ID_USER =? AND ID_FRIEND=?", friendId, userId);
-            }
-        } catch (NullPointerException e) {
+        if (str == null) {
             jdbcTemplate.update("INSERT INTO FRIENDS VALUES (?,?,?,?)", userId, friendId, null, 2);
-            jdbcTemplate.update("INSERT INTO FRIENDS VALUES (?,?,?,?)", friendId, userId, "added", 2);
+        }
+
+        SqlRowSet statusRow = jdbcTemplate.queryForRowSet(sql, friendId, userId);
+        if (statusRow.first()) {
+            status = statusRow.getInt("STATUS_ID");
+        }
+
+        if (status == null) {
+            return;
+        } else if (status == 2) {
+            jdbcTemplate.update("UPDATE FRIENDS \n" +
+                    "SET STATUS_ID =1\n" +
+                    "WHERE ID_USER =? AND ID_FRIEND =?", friendId, userId);
+
+            jdbcTemplate.update("UPDATE FRIENDS \n" +
+                    "SET STATUS_ID =1\n" +
+                    "WHERE ID_USER =? AND ID_FRIEND =?", userId, friendId);
         }
     }
 
     @Override
-    public List<UserWithStatus> getUserFriends(Long userId) {
+    public List<User> getUserFriends(Long userId) {
         String sql = "SELECT DISTINCT f.ID_FRIEND,\n" +
                 "f.ID_USER,\n" +
                 "s.STATUS,\n" +
@@ -93,7 +95,7 @@ public class UserDaoImpl implements UserDao {
                 "FROM FRIENDS f LEFT JOIN USERS u ON f.ID_FRIEND = u.ID LEFT JOIN STATUS s ON f.STATUS_ID = s.STATUS_ID\n" +
                 "WHERE f.ID_USER =?";
         return jdbcTemplate.query(sql, new Object[]{userId},
-                new BeanPropertyRowMapper<>(UserWithStatus.class));
+                new BeanPropertyRowMapper<>(User.class));
     }
 
     @Override
