@@ -52,7 +52,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findMostPopularFilms(long listSize){
+    public List<Film> findMostPopularFilms(long listSize) {
         return filmDao.getPopularFilms(listSize);
     }
 }
