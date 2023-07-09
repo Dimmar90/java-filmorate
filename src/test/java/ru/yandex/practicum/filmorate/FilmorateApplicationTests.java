@@ -81,18 +81,18 @@ class FilmorateApplicationTests {
 
     @Test
     public void testFindUserById() {
-        User user = userStorage.findUserById(1l);
+        User user = userStorage.findUserById(1L);
 
-        assertThat(user).hasFieldOrPropertyWithValue("id", 1l);
+        assertThat(user).hasFieldOrPropertyWithValue("id", 1L);
     }
 
     @Test
     public void testFindAllUsers() {
         List<User> listOfAllUsers = userStorage.findAllUsers();
 
-        assertThat(listOfAllUsers.get(0)).hasFieldOrPropertyWithValue("id", 1l);
-        assertThat(listOfAllUsers.get(1)).hasFieldOrPropertyWithValue("id", 2l);
-        assertThat(listOfAllUsers.get(2)).hasFieldOrPropertyWithValue("id", 3l);
+        assertThat(listOfAllUsers.get(0)).hasFieldOrPropertyWithValue("id", 1L);
+        assertThat(listOfAllUsers.get(1)).hasFieldOrPropertyWithValue("id", 2L);
+        assertThat(listOfAllUsers.get(2)).hasFieldOrPropertyWithValue("id", 3L);
     }
 
     @Test
@@ -105,48 +105,48 @@ class FilmorateApplicationTests {
         updatedUser.setBirthday(LocalDate.of(1990, 05, 06));
 
         userStorage.updateUser(updatedUser);
-        User userUpdated = userStorage.findUserById(1l);
+        User userUpdated = userStorage.findUserById(1L);
 
         assertThat(userUpdated).hasFieldOrPropertyWithValue("name", "UpdatedUser");
     }
 
     @Test
     public void testFindUsersFriends() {
-        userStorage.addFriend(1l, 2l);
+        userStorage.addFriend(1L, 2L);
 
-        List<User> usersFriend = userStorage.findUsersFriends(1l);
+        List<User> usersFriend = userStorage.findUsersFriends(1L);
 
-        assertThat(usersFriend.get(0)).hasFieldOrPropertyWithValue("id", 2l);
+        assertThat(usersFriend.get(0)).hasFieldOrPropertyWithValue("id", 2L);
     }
 
     @Test
     public void testFindCommonFriends() {
-        userStorage.addFriend(1l, 3l);
-        userStorage.addFriend(2l, 3l);
+        userStorage.addFriend(1L, 3L);
+        userStorage.addFriend(2L, 3L);
 
-        List<User> usersCommonFriends = userStorage.findCommonFriends(1l, 2l);
+        List<User> usersCommonFriends = userStorage.findCommonFriends(1L, 2L);
 
-        assertThat(usersCommonFriends.get(0)).hasFieldOrPropertyWithValue("id", 3l);
+        assertThat(usersCommonFriends.get(0)).hasFieldOrPropertyWithValue("id", 3L);
     }
 
     @Test
     public void testDeleteFriendId() {
-        userStorage.addFriend(1l, 2l);
-        List<User> usersFriend = userStorage.findUsersFriends(1l);
+        userStorage.addFriend(1L, 2L);
+        List<User> usersFriend = userStorage.findUsersFriends(1L);
 
-        assertThat(usersFriend.get(0)).hasFieldOrPropertyWithValue("id", 2l);
+        assertThat(usersFriend.get(0)).hasFieldOrPropertyWithValue("id", 2L);
 
-        userStorage.deleteFriendId(1l, 2l);
-        usersFriend = userStorage.findUsersFriends(1l);
+        userStorage.deleteFriendId(1L, 2L);
+        usersFriend = userStorage.findUsersFriends(1L);
 
         assertThat(usersFriend).isEmpty();
     }
 
     @Test
     public void testFindFilmById() {
-        Film film = filmStorage.findFilmById(1l);
+        Film film = filmStorage.findFilmById(1L);
 
-        assertThat(film).hasFieldOrPropertyWithValue("id", 1l);
+        assertThat(film).hasFieldOrPropertyWithValue("id", 1L);
     }
 
     @Test
@@ -167,7 +167,7 @@ class FilmorateApplicationTests {
         film.setGenres(genres);
         filmStorage.updateFilm(film);
 
-        Film updatedFilm = filmStorage.findFilmById(1l);
+        Film updatedFilm = filmStorage.findFilmById(1L);
 
         assertThat(updatedFilm).hasFieldOrPropertyWithValue("name", "FilmUpdated");
     }
@@ -176,40 +176,40 @@ class FilmorateApplicationTests {
     public void testFindAllFilms() {
         List<Film> listOfFilms = filmStorage.findAllFilms();
 
-        assertThat(listOfFilms.get(0)).hasFieldOrPropertyWithValue("id", 1l);
+        assertThat(listOfFilms.get(0)).hasFieldOrPropertyWithValue("id", 1L);
     }
 
     @Test
     public void testAddLike() {
-        filmStorage.addLike(1l);
+        filmStorage.addLike(1L);
 
-        Film film = filmStorage.findFilmById(1l);
+        Film film = filmStorage.findFilmById(1L);
 
-        assertThat(film).hasFieldOrPropertyWithValue("rate", 1l);
+        assertThat(film).hasFieldOrPropertyWithValue("rate", 1L);
     }
 
     @Test
     public void testDeleteLike() {
-        filmStorage.addLike(1l);
+        filmStorage.addLike(1L);
 
-        Film film = filmStorage.findFilmById(1l);
+        Film film = filmStorage.findFilmById(1L);
 
-        assertThat(film).hasFieldOrPropertyWithValue("rate", 1l);
+        assertThat(film).hasFieldOrPropertyWithValue("rate", 1L);
 
-        filmStorage.deleteLike(1l);
+        filmStorage.deleteLike(1L);
 
-        film = filmStorage.findFilmById(1l);
+        film = filmStorage.findFilmById(1L);
 
-        assertThat(film).hasFieldOrPropertyWithValue("rate", 0l);
+        assertThat(film).hasFieldOrPropertyWithValue("rate", 0L);
     }
 
     @Test
     public void testFindMostPopularFilms() {
-        filmStorage.addLike(2l);
+        filmStorage.addLike(2L);
 
         List<Film> listOfMostPopularFilms = filmStorage.findMostPopularFilms(2);
 
-        assertThat(listOfMostPopularFilms.get(0)).hasFieldOrPropertyWithValue("id", 2l);
+        assertThat(listOfMostPopularFilms.get(0)).hasFieldOrPropertyWithValue("id", 2L);
     }
 
     @Test
