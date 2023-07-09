@@ -98,7 +98,7 @@ class FilmorateApplicationTests {
     @Test
     public void testUpdateUser() {
         User updatedUser = new User();
-        updatedUser.setId(1l);
+        updatedUser.setId(1L);
         updatedUser.setName("UpdatedUser");
         updatedUser.setLogin("UserLogin");
         updatedUser.setEmail("mail@mail.ru");
@@ -159,7 +159,7 @@ class FilmorateApplicationTests {
         genres.add(genre);
 
         Film film = new Film();
-        film.setId(1l);
+        film.setId(1L);
         film.setName("FilmUpdated");
         film.setReleaseDate(LocalDate.of(1999, 04, 30));
         film.setDescription("FilmDescription");
