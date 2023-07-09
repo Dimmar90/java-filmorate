@@ -35,7 +35,7 @@ public class FilmController {
     }
 
     @GetMapping(value = "/films")
-    public ResponseEntity<?> getAllFilms(@RequestBody @Valid Film film) {
+    public ResponseEntity<?> getAllFilms() {
         return new ResponseEntity<>(filmService.getAllFilms(), HttpStatus.OK);
     }
 
@@ -54,5 +54,25 @@ public class FilmController {
     @GetMapping(value = "/films/popular")
     public ResponseEntity<?> getPopularFilms(@RequestParam(required = false) String count) {
         return new ResponseEntity<>(filmService.getPopularFilms(count), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/mpa")
+    public ResponseEntity<?> getAllMpa() {
+        return new ResponseEntity<>(filmService.getAllMpa(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/mpa/{id}")
+    public ResponseEntity<?> getMpaById(@PathVariable int id) {
+        return new ResponseEntity<>(filmService.getMpaById(id), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/genres")
+    public ResponseEntity<?> getAllGenres() {
+        return new ResponseEntity<>(filmService.getAllGenres(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/genres/{id}")
+    public ResponseEntity<?> getGenreById(@PathVariable int id) {
+        return new ResponseEntity<>(filmService.getGenreById(id), HttpStatus.OK);
     }
 }

@@ -6,8 +6,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -21,5 +21,6 @@ public class Film {
     private LocalDate releaseDate;
     private Mpa mpa = new Mpa();
     private long rate;
-    private List<Genre> genres = new ArrayList<>();
+    //private List<Genre> genres = new ArrayList<>();
+    private Set<Genre> genres = new LinkedHashSet<>();
 }

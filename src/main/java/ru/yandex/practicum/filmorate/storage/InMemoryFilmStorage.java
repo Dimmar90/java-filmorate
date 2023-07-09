@@ -3,6 +3,8 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.List;
 
@@ -53,5 +55,25 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public List<Film> findMostPopularFilms(long listSize) {
         return filmDao.getPopularFilms(listSize);
+    }
+
+    @Override
+    public List<Mpa> findAllMpa() {
+        return filmDao.getAllMpa();
+    }
+
+    @Override
+    public Mpa findMpaById(int mpaId) {
+        return filmDao.getMpaById(mpaId);
+    }
+
+    @Override
+    public List<Genre> findAllGenres() {
+        return filmDao.getAllGenres();
+    }
+
+    @Override
+    public Genre findGenreById(int genreId) {
+        return filmDao.getGenreById(genreId);
     }
 }

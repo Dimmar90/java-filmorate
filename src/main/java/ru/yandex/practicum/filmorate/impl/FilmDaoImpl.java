@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.dao.FilmDao;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class FilmDaoImpl implements FilmDao {
     @Override
     public void updateFilm(Film film) {
         jdbcTemplate.update("DELETE FROM FILMS WHERE ID = ?", film.getId());
-        jdbcTemplate.update("DELETE FROM FILM_GENRES WHERE FILM_ID = ?", film.getId());
+        jdbcTemplate.update("DELETE FROM FILM_GENRES fg WHERE FG.FILM_ID = ?", film.getId());
         addFilm(film);
     }
 
@@ -99,10 +100,66 @@ public class FilmDaoImpl implements FilmDao {
     public List<Film> getPopularFilms(long listSize) {
         List<Film> popularFilms = new ArrayList<>();
         String sqlForIds = "SELECT f.ID FROM FILMS f ORDER BY f.RATE DESC LIMIT ?";
-        SqlRowSet idsRow = jdbcTemplate.queryForRowSet(sqlForIds,listSize);
+        SqlRowSet idsRow = jdbcTemplate.queryForRowSet(sqlForIds, listSize);
         while (idsRow.next()) {
             popularFilms.add(findFilmById(idsRow.getInt("ID")));
         }
         return popularFilms;
+    }
+
+    @Override
+    public List<Mpa> getAllMpa() {
+        List<Mpa> mpaList = new ArrayList<>();
+        String sqlMpa = "SELECT * FROM MPA m ";
+        SqlRowSet mpaRow = jdbcTemplate.queryForRowSet(sqlMpa);
+        while (mpaRow.next()) {
+            Mpa mpa = new Mpa();
+            mpa.setId(mpaRow.getInt("MPA_ID"));
+            mpa.setName(mpaRow.getString("MPA"));
+            mpaList.add(mpa);
+        }
+        return mpaList;
+    }
+
+    @Override
+    public Mpa getMpaById(Integer mpaId) {
+        Mpa mpa = new Mpa();
+        String sqlGetMpaByID = "SELECT * FROM MPA m WHERE m.MPA_ID =?";
+        SqlRowSet mpaRow = jdbcTemplate.queryForRowSet(sqlGetMpaByID, mpaId);
+        if (mpaRow.first()) {
+            mpa.setId(mpaRow.getInt("MPA_ID"));
+            mpa.setName(mpaRow.getString("MPA"));
+        } else {
+            return null;
+        }
+        return mpa;
+    }
+
+    @Override
+    public List<Genre> getAllGenres() {
+        List<Genre> genres = new ArrayList<>();
+        String sqlGetAllGenres = "SELECT * FROM GENRE g";
+        SqlRowSet genresRow = jdbcTemplate.queryForRowSet(sqlGetAllGenres);
+        while (genresRow.next()) {
+            Genre genre = new Genre();
+            genre.setId(genresRow.getInt("GENRE_ID"));
+            genre.setName(genresRow.getString("GENRE_NAME"));
+            genres.add(genre);
+        }
+        return genres;
+    }
+
+    @Override
+    public Genre getGenreById(int genreId) {
+        Genre genre = new Genre();
+        String sqlGetGenreById = "SELECT * FROM GENRE g WHERE g.GENRE_ID =?";
+        SqlRowSet genreRow = jdbcTemplate.queryForRowSet(sqlGetGenreById, genreId);
+        if (genreRow.first()) {
+            genre.setId(genreRow.getInt("GENRE_ID"));
+            genre.setName(genreRow.getString("GENRE_NAME"));
+        } else {
+            return null;
+        }
+        return genre;
     }
 }

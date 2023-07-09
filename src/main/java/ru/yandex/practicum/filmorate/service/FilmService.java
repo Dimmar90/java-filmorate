@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ErrorException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -16,7 +18,7 @@ public class FilmService {
     private UserStorage userStorage;
     private FilmStorage filmStorage;
     private final Logger log = LoggerFactory.getLogger(FilmService.class);
-    private final LocalDate firstFilmRelease = LocalDate.of(1895,12,12);
+    private final LocalDate firstFilmRelease = LocalDate.of(1895, 12, 12);
 
 
     public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
@@ -100,6 +102,34 @@ public class FilmService {
             return filmStorage.findMostPopularFilms(10);
         } else {
             return filmStorage.findMostPopularFilms(Long.parseLong(count));
+        }
+    }
+
+    public List<Mpa> getAllMpa() {
+        return filmStorage.findAllMpa();
+    }
+
+    public Mpa getMpaById(int mpaId) {
+        if (filmStorage.findMpaById(mpaId) == null) {
+            String msg = "Wrong MPA Id";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        } else {
+            return filmStorage.findMpaById(mpaId);
+        }
+    }
+
+    public List<Genre> getAllGenres() {
+        return filmStorage.findAllGenres();
+    }
+
+    public Genre getGenreById(int genreId) {
+        if (filmStorage.findGenreById(genreId) == null) {
+            String msg = "Wrong Genre Id";
+            log.warn(msg);
+            throw new ErrorException(msg);
+        } else {
+            return filmStorage.findGenreById(genreId);
         }
     }
 }
