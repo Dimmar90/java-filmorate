@@ -126,8 +126,3 @@ public class UserDaoImpl implements UserDao {
         jdbcTemplate.update(sql, friendID, userID);
     }
 }
-
-
-
-
-

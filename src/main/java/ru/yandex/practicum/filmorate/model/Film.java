@@ -21,6 +21,5 @@ public class Film {
     private LocalDate releaseDate;
     private Mpa mpa = new Mpa();
     private long rate;
-    //private List<Genre> genres = new ArrayList<>();
     private Set<Genre> genres = new LinkedHashSet<>();
 }

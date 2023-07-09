@@ -52,6 +52,16 @@ public class FilmService {
     }
 
     public void updateFilm(Film film) {
+        if (film.getDuration() <= 0) {
+            String msg = "Wrong Duration Of Film";
+            log.warn(msg);
+            throw new IllegalStateException(msg);
+        }
+        if (film.getReleaseDate().isBefore(firstFilmRelease)) {
+            String msg = "Wrong Release Date Of Film";
+            log.warn(msg);
+            throw new IllegalStateException(msg);
+        }
         if (filmStorage.findFilmById(film.getId()) == null) {
             String msg = "Film With This Id Does Not Exist";
             log.warn(msg);

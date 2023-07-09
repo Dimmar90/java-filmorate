@@ -57,8 +57,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void deleteFriendId(Long userID, Long friendID) {
-        userDao.deleteFriend(userID,friendID);
+        userDao.deleteFriend(userID, friendID);
     }
-
-
 }
