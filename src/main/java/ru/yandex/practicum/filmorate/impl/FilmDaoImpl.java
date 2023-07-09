@@ -97,7 +97,12 @@ public class FilmDaoImpl implements FilmDao {
 
     @Override
     public List<Film> getPopularFilms(long listSize) {
-        String sql = "SELECT * FROM FILMS f ORDER BY f.RATE DESC LIMIT ?";
-        return jdbcTemplate.query(sql, new Object[]{listSize}, new BeanPropertyRowMapper<>(Film.class));
+        List<Film> popularFilms = new ArrayList<>();
+        String sqlForIds = "SELECT f.ID FROM FILMS f ORDER BY f.RATE DESC LIMIT ?";
+        SqlRowSet idsRow = jdbcTemplate.queryForRowSet(sqlForIds,listSize);
+        while (idsRow.next()) {
+            popularFilms.add(findFilmById(idsRow.getInt("ID")));
+        }
+        return popularFilms;
     }
 }
