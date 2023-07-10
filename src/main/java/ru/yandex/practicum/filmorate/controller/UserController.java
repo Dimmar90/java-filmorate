@@ -18,14 +18,8 @@ public class UserController {
 
     @PostMapping(value = "/users")
     public ResponseEntity<?> createUser(@RequestBody @Valid User user) {
-        userService.createUser(user);
+        userService.addUser(user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
-    }
-
-    @PutMapping(value = "/users")
-    public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
-        userService.updateUser(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(value = "/users")
@@ -38,10 +32,16 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
+    @PutMapping(value = "/users")
+    public ResponseEntity<?> updateUser(@RequestBody @Valid User user) {
+        userService.updateUser(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
     @PutMapping(value = "/users/{userId}/friends/{friendId}")
     public ResponseEntity<?> addFriend(@PathVariable long userId, @PathVariable long friendId) {
         userService.addFriend(userId, friendId);
-        return new ResponseEntity<>("Friend Added", HttpStatus.OK);
+        return new ResponseEntity<>("Add Friend", HttpStatus.OK);
     }
 
     @GetMapping(value = "/users/{userId}/friends")

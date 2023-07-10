@@ -12,8 +12,7 @@ import java.time.LocalDate;
 
 @Data
 @Entity
-public class User {
-
+public class UserWithStatus {
     @NotNull
     @Id
     private long id;
@@ -28,8 +27,6 @@ public class User {
 
     @Past(message = "Wrong user birthday")
     private LocalDate birthday;
-
-    private String friendshipStatus = new FriendshipStatus().getStatus();
 
     private String status;
 }
