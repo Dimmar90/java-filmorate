@@ -3,13 +3,15 @@ package ru.yandex.practicum.filmorate.dao;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserDao {
-    User findUserById(Long id);
 
-    List<User> getAllUsers();
+    void setUsersId(User user);
 
-    User findLastUser();
+    List<User> findAllUsers();
+
+    Optional<User> findUserById(Long id);
 
     void addUser(User user);
 
@@ -17,9 +19,9 @@ public interface UserDao {
 
     void addFriend(Long userId, Long friendId);
 
-    List<User> getUserFriends(Long userId);
+    List<User> findUserFriends(Long userId);
 
-    List<User> getCommonFriends(Long userId, Long friendId);
+    List<User> findCommonFriends(Long firstUserId, Long secondUserId);
 
     void deleteFriend(Long userID, Long friendID);
 }

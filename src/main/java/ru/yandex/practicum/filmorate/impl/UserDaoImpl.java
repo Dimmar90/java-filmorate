@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UserDaoImpl implements UserDao {
@@ -18,10 +19,19 @@ public class UserDaoImpl implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
+    public Optional<User> findLastUser() {
+        return Optional.ofNullable(jdbcTemplate.query("SELECT * FROM USERS ORDER BY id DESC LIMIT 1",
+                new BeanPropertyRowMapper<>(User.class)).stream().findAny().orElse(null));
+    }
+
     @Override
-    public User findLastUser() {
-        return jdbcTemplate.query("SELECT * FROM USERS ORDER BY id DESC LIMIT 1",
-                new BeanPropertyRowMapper<>(User.class)).stream().findAny().orElse(null);
+    public void setUsersId(User user) {
+        if (findLastUser().isEmpty()) {
+            user.setId(1);
+        } else {
+            user.setId(findLastUser().get().getId() + 1);
+        }
     }
 
     @Override
@@ -37,13 +47,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findUserById(Long id) {
-        return jdbcTemplate.query("SELECT * FROM USERS AS u WHERE ID = ?",
-                new Object[]{id}, new BeanPropertyRowMapper<>(User.class)).stream().findAny().orElse(null);
+    public Optional<User> findUserById(Long id) {
+        return Optional.ofNullable(jdbcTemplate.query("SELECT * FROM USERS AS u WHERE ID = ?",
+                new Object[]{id}, new BeanPropertyRowMapper<>(User.class)).stream().findAny().orElse(null));
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> findAllUsers() {
         return jdbcTemplate.query("SELECT * FROM USERS ",
                 new BeanPropertyRowMapper<>(User.class));
     }
@@ -82,7 +92,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getUserFriends(Long userId) {
+    public List<User> findUserFriends(Long userId) {
         String sql = "SELECT DISTINCT f.ID_FRIEND,\n" +
                 "f.ID_USER,\n" +
                 "s.STATUS,\n" +
@@ -98,7 +108,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getCommonFriends(Long firstUserId, Long secondUserId) {
+    public List<User> findCommonFriends(Long firstUserId, Long secondUserId) {
         List<User> commonFriends = new ArrayList<>();
         List<Long> commonFriendsIds = new ArrayList<>();
         String findCommonFriendsIds = "SELECT f.ID_FRIEND , COUNT(f.ID_FRIEND) AS cnt \n" +
@@ -112,7 +122,7 @@ public class UserDaoImpl implements UserDao {
             commonFriendsIds.add(id);
         }
         for (Long id : commonFriendsIds) {
-            commonFriends.add(findUserById(id));
+            commonFriends.add(findUserById(id).get());
         }
         return commonFriends;
     }
@@ -120,8 +130,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void deleteFriend(Long userID, Long friendID) {
         String sql = "DELETE \n" +
-                "FROM FRIENDS f \n" +
-                "WHERE f.ID_USER =? AND f.ID_FRIEND =?";
+                "FROM FRIENDS  \n" +
+                "WHERE FRIENDS.ID_USER =? AND FRIENDS.ID_FRIEND =?";
         jdbcTemplate.update(sql, userID, friendID);
         jdbcTemplate.update(sql, friendID, userID);
     }

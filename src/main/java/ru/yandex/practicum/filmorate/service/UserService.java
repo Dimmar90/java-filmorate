@@ -3,43 +3,40 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.ErrorException;
+import ru.yandex.practicum.filmorate.dao.UserDao;
+import ru.yandex.practicum.filmorate.exception.WrongIdException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
 
 @Service
 public class UserService {
 
-    private final UserStorage userStorage;
+    private UserDao userDao;
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    public UserService(UserStorage userStorage) {
-        this.userStorage = userStorage;
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
     }
 
-    public void createUser(User user) {
+    public void addUser(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
+        userDao.setUsersId(user);
+        userDao.addUser(user);
         log.debug("User Added");
-        userStorage.addUser(user);
     }
 
     public User getUserById(long userId) {
-        if (userStorage.findUserById(userId) == null) {
-            String msg = "User With This Id Does Not Exist";
-            log.warn(msg);
-            throw new ErrorException(msg);
-        }
+        wrongUserIdException(userId);
         log.debug("Get User By Id");
-        return userStorage.findUserById(userId);
+        return userDao.findUserById(userId).get();
     }
 
     public List<User> getAllUsers() {
         log.debug("Get All Users");
-        return userStorage.findAllUsers();
+        return userDao.findAllUsers();
     }
 
 
@@ -47,69 +44,52 @@ public class UserService {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
-        if (userStorage.findUserById(user.getId()) == null) {
-            String msg = "User With This Id Does Not Exist";
-            log.warn(msg);
-            throw new ErrorException(msg);
-        } else {
-            log.debug("User Updated");
-            userStorage.updateUser(user);
-        }
+        wrongUserIdException(user.getId());
+        log.debug("User Updated");
+        userDao.updateUser(user);
     }
 
     public void addFriend(long userId, long friendId) {
-        if (userStorage.findUserById(userId) == null) {
-            String msg = "User With This Id Does Not Exist";
-            log.warn(msg);
-            throw new ErrorException(msg);
-        }
-        if (userStorage.findUserById(friendId) == null) {
-            String msg = "Friend With This Id Does Not Exist";
-            log.warn(msg);
-            throw new ErrorException(msg);
-        }
-        userStorage.addFriend(userId, friendId);
+        wrongUserIdException(userId);
+        wrongUserIdException(friendId);
+        userDao.addFriend(userId, friendId);
         log.debug("Friend Added");
     }
 
     public List<User> getUsersFriends(long userId) {
-        if (userStorage.findUserById(userId) == null) {
-            String msg = "User With This Id Does Not Exist";
-            log.warn(msg);
-            throw new ErrorException(msg);
-        } else {
-            return userStorage.findUsersFriends(userId);
-        }
+        wrongUserIdException(userId);
+        return userDao.findUserFriends(userId);
+
     }
 
     public List<User> getCommonFriends(long userId, long friendId) {
-        if (userStorage.findUserById(userId) == null) {
-            String msg = "User With This Id Does Not Exist";
-            log.warn(msg);
-            throw new ErrorException(msg);
-        }
-        if (userStorage.findUserById(friendId) == null) {
-            String msg = "Friend With This Id Does Not Exist";
-            log.warn(msg);
-            throw new ErrorException(msg);
-        }
+        wrongUserIdException(userId);
+        wrongFriendIdException(friendId);
         log.debug("Get Common Friends");
-        return userStorage.findCommonFriends(userId, friendId);
+        return userDao.findCommonFriends(userId, friendId);
     }
 
     public void deleteFriend(long userId, long friendId) {
-        if (userStorage.findUserById(userId) == null) {
+        wrongUserIdException(userId);
+        wrongFriendIdException(friendId);
+        userDao.deleteFriend(userId, friendId);
+        userDao.deleteFriend(friendId, userId);
+        log.debug("Friend Deleted");
+    }
+
+    public void wrongUserIdException(long userId) {
+        if (userDao.findUserById(userId).isEmpty()) {
             String msg = "User With This Id Does Not Exist";
             log.warn(msg);
-            throw new ErrorException(msg);
+            throw new WrongIdException(msg);
         }
-        if (userStorage.findUserById(friendId) == null) {
+    }
+
+    public void wrongFriendIdException(long friendId) {
+        if (userDao.findUserById(friendId).isEmpty()) {
             String msg = "Friend With This Id Does Not Exist";
             log.warn(msg);
-            throw new ErrorException(msg);
+            throw new WrongIdException(msg);
         }
-        userStorage.deleteFriendId(userId, friendId);
-        userStorage.deleteFriendId(friendId, userId);
-        log.debug("Friend Deleted");
     }
 }

@@ -1,26 +1,16 @@
 INSERT INTO STATUS(STATUS_ID, STATUS)
-VALUES (1, 'Friendship Confirmed');
-INSERT INTO STATUS(STATUS_ID, STATUS)
-VALUES (2, 'Friendship Does Not Confirmed');
+VALUES (1, 'Friendship Confirmed'),
+       (2, 'Friendship Does Not Confirmed');
 INSERT INTO GENRE(GENRE_ID, GENRE_NAME)
-VALUES (1, 'Комедия');
-INSERT INTO GENRE(GENRE_ID, GENRE_NAME)
-VALUES (2, 'Драма');
-INSERT INTO GENRE(GENRE_ID, GENRE_NAME)
-VALUES (3, 'Мультфильм');
-INSERT INTO GENRE(GENRE_ID, GENRE_NAME)
-VALUES (4, 'Триллер');
-INSERT INTO GENRE(GENRE_ID, GENRE_NAME)
-VALUES (5, 'Документальный');
-INSERT INTO GENRE(GENRE_ID, GENRE_NAME)
-VALUES (6, 'Боевик');
+VALUES (1, 'Комедия'),
+       (2, 'Драма'),
+       (3, 'Мультфильм'),
+       (4, 'Триллер'),
+       (5, 'Документальный'),
+       (6, 'Боевик');
 INSERT INTO MPA(MPA_ID, MPA)
-VALUES (1, 'G');
-INSERT INTO MPA(MPA_ID, MPA)
-VALUES (2, 'PG');
-INSERT INTO MPA(MPA_ID, MPA)
-VALUES (3, 'PG-13');
-INSERT INTO MPA(MPA_ID, MPA)
-VALUES (4, 'R');
-INSERT INTO MPA(MPA_ID, MPA)
-VALUES (5, 'NC-17');
+VALUES (1, 'G'),
+       (2, 'PG'),
+       (3, 'PG-13'),
+       (4, 'R'),
+       (5, 'NC-17')
