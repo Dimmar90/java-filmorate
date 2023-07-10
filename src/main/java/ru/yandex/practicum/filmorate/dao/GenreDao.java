@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface GenreDao {
     List<Genre> findAllGenres();
+
     Genre findGenreById(int genreId);
 }
